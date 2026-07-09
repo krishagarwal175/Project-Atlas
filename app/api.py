@@ -1,10 +1,10 @@
-"""FastAPI service — exposes the Research OS compute layer over REST.
+"""FastAPI service — exposes the Atlas compute layer over REST (localhost only).
 
-The vault stays the source of truth; this is a read/compute layer plus a
-write-only market-intel/governance surface. Auto-generated OpenAPI docs at /docs
-double as the internal API reference.
+Local-first: binds to 127.0.0.1, no auth, single user. The vault stays the source
+of truth; this is a read/compute layer plus a write-only market-intel/governance
+surface. Auto-generated OpenAPI docs at /docs double as the internal API reference.
 
-Run:  uvicorn api:app --reload   (from the backend/ folder)
+Run:  uvicorn api:app --reload   (from the app/ folder)  — or:  python cli.py serve
 """
 from __future__ import annotations
 from datetime import date

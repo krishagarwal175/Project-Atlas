@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-# make backend/ importable when running pytest from anywhere
+# make app/ importable when running pytest from anywhere
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import vault  # noqa: E402

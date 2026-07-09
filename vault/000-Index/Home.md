@@ -4,9 +4,9 @@ title: Home
 updated: 2026-07-09
 ---
 
-# 🏠 Acredemia Research OS — Home
+# 🏠 Atlas — Home
 
-> The founder's second brain for Acredemia. Knowledge → Understanding → Tested Theories → High-quality Decisions → remembered forever.
+> Atlas: the **local-first, single-user** Strategic OS that runs Acredemia. The software I open every morning. Knowledge → Understanding → Tested Theories → High-quality Decisions → remembered forever.
 
 ## Start here every morning
 1. **[[700-Market-Signals]]** — what changed in the world?
@@ -23,8 +23,8 @@ updated: 2026-07-09
 ## The core loop
 `Question → Evidence → Understanding → Theory (survives contradiction) → Decision (quality-scored) → Experiment → Outcome → back into Evidence`
 
-## 🧊 Architecture is frozen at 1.0
-Read [[ADR-002-atlas-1.0-architecture-freeze]] before proposing any architectural change. Features are added only to solve problems found through real usage.
+## 🧊 Architecture is frozen at 1.0 · 🖥 Local-First
+Read [[ADR-002-atlas-1.0-architecture-freeze]] and [[ADR-003-local-first-single-user]] before proposing any architectural change. Atlas is local-first and single-user — no cloud, no accounts, no SaaS. Features are added only to solve problems found through real daily usage.
 
 ## What this vault is
 The **source of truth**. Plain markdown you own. Every backend service reads and writes these files; nothing important lives only in a database. If every tool we build dies, this vault still works by hand.

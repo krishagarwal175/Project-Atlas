@@ -1,6 +1,6 @@
-# Acredemia Research OS — Vault
+# Atlas — Vault
 
-This folder is an **Obsidian vault** and the **source of truth** for Acredemia's Research Operating System. Open it in [Obsidian](https://obsidian.md) (free).
+This folder is an **Obsidian vault** and the **source of truth** for Atlas, the local-first Strategic OS that runs Acredemia. It's plain markdown you own — it works by hand even if the `app/` never runs. Open it in [Obsidian](https://obsidian.md) (free).
 
 ## First run
 1. Open Obsidian → "Open folder as vault" → select this folder.

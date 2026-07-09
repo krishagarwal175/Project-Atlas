@@ -1,6 +1,6 @@
-# Acredemia Research OS — Backend (Phase 1)
+# Atlas — App (engines, api, cli)
 
-The compute layer over the [Obsidian vault](../Acredemia-Vault). The **vault is the source of truth** (see `ADR-001`); this backend is a rebuildable layer that reads markdown and writes only to the market-signal inbox and the governance audit note.
+The compute layer of Atlas over the [vault](../vault). The **vault is the source of truth** (see `ADR-001`); this app is a rebuildable layer that reads markdown and writes only to the market-signal inbox and the governance audit note. **Local-first, single-user, offline-capable** (see `ADR-003`).
 
 **Zero paid APIs. No cloud LLM.** Core runs on stdlib + PyYAML; search uses local scikit-learn TF-IDF today and upgrades to local embeddings if you install them.
 

@@ -7,7 +7,7 @@ tags: [architecture]
 
 # System Architecture (overview)
 
-> Inverted stack: the **vault is the source of truth**; code is a rebuildable layer over it. See [[ADR-001-markdown-substrate]].
+> Inverted stack: the **vault is the source of truth**; code is a rebuildable layer over it. See [[ADR-001-markdown-substrate]]. Atlas is **Local-First / single-user** — see [[ADR-003-local-first-single-user]]. Folders: `app/` (compute), `ui/` (dashboard), `vault/` (substrate).
 
 ```
 SUBSTRATE   → Obsidian vault (markdown + YAML + [[wikilinks]]), git-backed. Source of truth.
@@ -34,6 +34,6 @@ CACHE       → SQLite + numpy embedding index. Disposable; regenerated from the
 4. **No paid APIs, no cloud LLM in production.** Ollama optional and local only.
 
 ## Why not a graph DB (Neo4j)?
-At Acredemia scale the `[[wikilink]]` graph *is* the knowledge graph, maintained by the act of writing. Extract to NetworkX on demand for computation. Neo4j adds a server + query language + sync problem for a scale problem we don't have. Revisit only at Phase-4 enterprise scale.
+At single-user scale the `[[wikilink]]` graph *is* the knowledge graph, maintained by the act of writing. Extract to NetworkX on demand for computation. Neo4j adds a server + query language + sync problem for a scale problem we don't have, and would violate local-first (invariant I11). Revisit only in a hypothetical Phase-5 multi-user future.
 
 Related: [[ADR-001-markdown-substrate]] · [[ADR-002-atlas-1.0-architecture-freeze]] (the frozen v1 foundation — read before any architectural change) · [[Roadmap]] · [[Vault-Governance]]

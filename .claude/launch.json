@@ -2,16 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "frontend",
+      "name": "ui",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "5173", "--directory", "frontend"],
+      "runtimeArgs": ["-m", "http.server", "5173", "--directory", "ui"],
       "port": 5173
-    },
-    {
-      "name": "landing",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "landing"],
-      "port": 5500
     },
     {
       "name": "api",

@@ -1,6 +1,5 @@
-# Backend cache — disposable, rebuilt from the vault (ADR-001)
-backend/cache.sqlite
-backend/__pycache__/
+# App cache — disposable, rebuilt from the vault (ADR-001)
+app/cache.sqlite
 **/__pycache__/
 *.pyc
 
@@ -15,7 +14,7 @@ env/
 **/.obsidian/workspace*.json
 **/.obsidian/cache
 .obsidian/
-Acredemia-Vault/.trash/
+vault/.trash/
 
 # OS
 .DS_Store

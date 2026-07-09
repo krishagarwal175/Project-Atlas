@@ -8,6 +8,13 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — 🖥 Local-First pivot + repository migration ([[ADR-003-local-first-single-user]])
+- **What:** Deliberate product-level decision — Atlas is a **Local-First, single-user** Strategic OS, not a SaaS. Removed all cloud/SaaS assumptions from v1 (landing page archived; no waitlist/signups/auth/hosting). Added 6 invariants (I11–I16: Local-First, Offline-First, User-Ownership, Zero-Lock-in, Deterministic-Core/Optional-AI, Desktop-packaging-friendly). Cloud/multi-user pushed to Phase 5 "possible future."
+- **Repository migration:** `backend/ → app/`, `frontend/ → ui/`, `Acredemia-Vault/ → vault/`, `landing/ → archive/marketing/landing-page/` (kept, marked future-only). New root `README.md` + `docs/` (DEVELOPMENT, ARCHITECTURE). Config vault path → `vault/`; env var `ACREDEMIA_VAULT → ATLAS_VAULT`; launch/gitignore updated; landing removed from dev workflow.
+- **Kept the engines as one flat package** (did not split into engines/parser/governance/… top-level packages) — that would break the frozen clean-DAG simplicity (I10) for zero single-user benefit. Rationale in [[ADR-003-local-first-single-user]].
+- **Verified:** 37 tests green from `app/`; vault resolves at `vault/`; all engines functional after the move.
+- **Why:** Atlas is the software I open every morning to run Acredemia — optimize for daily solo work, never for deployment.
+
 ## 2026-07-09 — 🧊 Atlas 1.0 Architecture Freeze (RC-1 audit)
 - **What:** Full RC-1 release audit → [[ADR-002-atlas-1.0-architecture-freeze]], the permanent foundational document (module responsibilities, clean-DAG dependency map, entity model, knowledge-flow verification, technical-debt ranking, release checklist, 10 architectural invariants, and the four philosophies). Architecture formally frozen at 1.0.
 - **Consistency fixes bound during the freeze (not new features):** made the per-note `half-life-days` field live (`governance._half_life` honors it); implemented the documented-but-missing `broken-strategic-link` check (decision citing a contested theory) and reclassified "ADR inconsistencies" as manual review; split the tag taxonomy into Active vs Reserved types; declared the SQLite cache deferred (YAGNI) and marked `config.CACHE_DB` reserved; added `.gitattributes` to stop CRLF churn. Tests: 35→37, all green.

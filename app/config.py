@@ -1,17 +1,19 @@
-"""Central configuration for the Acredemia Research OS backend.
+"""Central configuration for Atlas — a Local-First Research Operating System.
 
-Everything is local and free. No paid APIs. The vault is the source of truth;
-this backend builds a *disposable* SQLite cache over it (see ADR-001).
+Everything is local and free. No paid APIs, no cloud, no accounts. The markdown
+`vault/` is the source of truth; this app builds only a *disposable* cache over it
+(see ADR-001, ADR-003). Runs fully offline; the internet only enhances Market Intel.
 """
 from __future__ import annotations
 import os
 from pathlib import Path
 
-# Vault path: sibling folder by default, overridable via env var.
+# Vault path: the `vault/` folder at the repo root, overridable via env var.
+# Local-first: this is the source of truth and lives on your own disk.
 VAULT_PATH = Path(
     os.environ.get(
-        "ACREDEMIA_VAULT",
-        str(Path(__file__).resolve().parent.parent / "Acredemia-Vault"),
+        "ATLAS_VAULT",
+        str(Path(__file__).resolve().parent.parent / "vault"),
     )
 )
 
