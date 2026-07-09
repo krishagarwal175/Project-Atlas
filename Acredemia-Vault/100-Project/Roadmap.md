@@ -30,8 +30,9 @@ Folder tree, templates, governance, taxonomy, Strategic-DNA stubs, worked seed l
 - ✅ NetworkX over parsed wikilinks (centrality, pathfinding, neighborhoods, clusters) — `backend/graph.py`, `/graph/*`.
 - ✅ Confidence & Contradiction Engine over the Evidence Ledger (derived, self-correcting states) — `backend/epistemics.py`, `/epistemics`; drift folded into the Governance Bot.
 - ✅ Freshness/Decay recomputation (caps confidence when lapsed).
-- ⏳ Thin web dashboard over `/graph` + `/epistemics` (next).
-- ⏳ Ollama-assisted Theory drafting (optional, local, human-approved) — last piece.
+- ✅ Thin web dashboard over `/graph` + `/epistemics` (`frontend/index.html`) with Save-decision-note + signal-triage actions.
+- ✅ Optional local Ollama narrative layer with deterministic fallback (`backend/narrative.py`) — narrative only, never alters scores/confidence.
+- Phase 3 complete. (Ollama-assisted *Theory drafting* remains an optional future enhancement, distinct from the narrative summaries now shipped.)
 
 ## Phase 4 — Enterprise extensibility
 - Multi-vault/tenant, roles, hosted tier. "Your knowledge is portable markdown you own" becomes the sales pitch.

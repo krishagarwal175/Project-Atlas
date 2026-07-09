@@ -6,12 +6,11 @@ published: "Wed, 17 Jun 2026 00:00:00 GMT"
 ingested: 2026-07-09
 relevance: log
 matched-keywords: ['edtech']
-linked-to: ""
+linked-to: "[[Q-should-verification-stay-free]]"
 freshness: fresh
 half-life-days: 90
 tags: ["domain/edtech"]
 ---
-
 # 📡 5 Things We Did Wrong with Edtech
 
 **Source:** EdSurge · [link](https://edsurge.com/news/5-things-we-did-wrong-with-edtech) · published Wed, 17 Jun 2026 00:00:00 GMT
@@ -25,6 +24,7 @@ tags: ["domain/edtech"]
 <Human triage: does this touch an assumption or theory? Link it below or delete this note.>
 
 ## Touches
+- [[Q-should-verification-stay-free]] (stance: supports)
 - [[...]] (stance: supports | contradicts)
 
 > A signal may LINK to a decision as context. It must never auto-modify a score.

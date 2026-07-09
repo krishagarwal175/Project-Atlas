@@ -21,6 +21,8 @@ import market_intel
 import decision_engine
 import epistemics
 import graph as graphmod
+import narrative
+import vault_write
 from search import SearchEngine
 from vault import load_vault, build_backlinks
 
@@ -167,6 +169,32 @@ def epistemics_assess():
 @app.get("/graph/summary")
 def graph_summary():
     return graphmod.summary()
+
+
+class TriageIn(BaseModel):
+    signal: str
+    target: str
+    stance: str = "supports"
+
+
+@app.post("/triage")
+def triage(body: TriageIn):
+    ok = vault_write.triage_signal(body.signal, body.target, body.stance)
+    _reset_cache()
+    return {"ok": ok, "signal": body.signal, "target": body.target}
+
+
+@app.get("/summarize")
+def summarize(note: str, ollama: bool = Query(True, description="use local Ollama if available")):
+    # ollama flag lets the UI force the deterministic fallback for reproducibility
+    if not ollama:
+        n = next((x for x in load_vault() if x.filename.lower() == note.lower()), None)
+        if not n:
+            return {"error": f"note '{note}' not found"}
+        return {"note": n.filename, "engine": "extractive (forced)",
+                "summary": narrative._extractive(n),
+                "disclaimer": "Narrative only — does not alter any score or confidence."}
+    return narrative.summarize_note(note)
 
 
 @app.get("/graph/path")

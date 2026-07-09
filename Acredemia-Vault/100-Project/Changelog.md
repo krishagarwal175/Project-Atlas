@@ -8,6 +8,14 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — Phase 3 (part 3): UI actions + optional local narrative layer
+- **What:** `backend/vault_write.py` (safe, surgical, human-initiated writes back to source notes — frontmatter field + section append), `backend/narrative.py` (optional **local Ollama** summaries with a deterministic extractive fallback when Ollama is absent — narrative only, never alters a score/confidence). New endpoints `POST /triage`, `GET /summarize`. Dashboard gained a **💾 Save decision note** button (writes a real decision note to `600-Decisions/`) and **per-signal triage** controls (link a signal to a Question/Theory, sourced from the live governance audit). All verified live in-browser: saved a decision note and triaged signals, watching the untriaged count drop 4→1.
+- **Why:** Closes the loop from the dashboard — you can now act (decide, triage) without leaving the daily environment, and get plain-English summaries with zero cloud dependency.
+- **Tradeoffs:** Ollama not installed here, so summaries use the deterministic fallback (by design); triage writes are intentionally minimal-surface to avoid corrupting notes.
+- **Impacted modules:** new vault-write + narrative; API + dashboard.
+- **Notable:** triaged 3 market signals via the UI/API during verification (inbox 4→1), demonstrating the human-in-the-loop signal flow end to end.
+- **Follow-ups:** [ ] install Ollama for richer summaries (optional) · [ ] Phase 4 (multi-tenant / React) only if this goes beyond internal use.
+
 ## 2026-07-09 — Phase 3 (part 2): Web dashboard (daily operating environment)
 - **What:** `frontend/index.html` — a single self-contained dashboard (no build step, no npm) over the API, plus CORS on the backend and a `.claude/launch.json`. Implements the "morning brief" (notes, confidence drifts, untriaged signals, audit issues), vault search, the confidence board (derived states + drift alerts), the market-signal inbox, the knowledge graph (centrality + path finder), and the decision engine (editable alternatives → ranked table with DNA guardrail + fragility). Verified live in-browser: header "60 notes · vault ok", all sections populated, search/decide/graph/epistemics all functional.
 - **Why:** Turns the system into the daily environment the vision calls for — open it in the morning, see what changed, decide, all in one place — at zero cost and zero toolchain.

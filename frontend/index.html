@@ -178,10 +178,27 @@ async function loadEpi(){
   }).join('');
 }
 
+let QOPTS=[];
+async function loadTargets(){
+  const [q,t]=await Promise.all([j('/notes?type=question'),j('/notes?type=theory')]);
+  QOPTS=[...q.notes,...t.notes].map(n=>n.note);
+}
 async function loadSignals(){
-  const d=await j('/notes?type=market-signal');
-  $('signals').innerHTML=d.notes.map(s=>`<li><b>${s.title}</b>
-    <span class="pill warn">untriaged</span></li>`).join('')||'<li class="muted">inbox clear</li>';
+  await loadTargets();
+  const a=await j('/audit');
+  const untriaged=a.findings.filter(f=>f.category==='untriaged-signal');
+  $('signals').innerHTML=untriaged.map((s,i)=>`<li><b>${s.note}</b>
+    <div class="row small" style="margin-top:5px">
+      <select id="tg${i}" style="flex:1">${QOPTS.map(o=>`<option>${o}</option>`).join('')}</select>
+      <select id="st${i}"><option>supports</option><option>contradicts</option></select>
+      <button class="sec" onclick="triage('${s.note}',${i})">link</button>
+    </div></li>`).join('')||'<li class="muted">inbox clear ✓</li>';
+}
+async function triage(signal,i){
+  const target=$('tg'+i).value, stance=$('st'+i).value;
+  await j('/triage',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({signal,target,stance})});
+  loadSignals();loadBrief();loadCentral();
 }
 
 async function loadCentral(){
@@ -224,9 +241,18 @@ async function doDecide(){
     <td><b>${r.total.toFixed(3)}</b></td></tr>`).join('');
   const frag=d.is_fragile?`<span class="pill warn">fragile — ${d.fragile_reason}</span>`:'<span class="pill good">robust</span>';
   const dna=d.dna_flags.length?`<div class="small" style="margin-top:6px">⚠ ${d.dna_flags.join('; ')}</div>`:'';
-  $('decision').innerHTML=`<div class="row"><b>Winner: <span class="win">${d.winner}</span></b> ${frag}</div>${dna}
+  $('decision').innerHTML=`<div class="row"><b>Winner: <span class="win">${d.winner}</span></b> ${frag}
+      <span style="flex:1"></span>
+      <button class="sec" onclick="saveDecision()">💾 Save decision note</button></div>${dna}
     <table style="margin-top:10px"><tr><th>#</th><th>alternative</th>${dims.map(x=>`<th>${x.slice(0,4)}</th>`).join('')}<th>total</th></tr>${rows}</table>
-    <div class="muted small" style="margin-top:6px">The number is disposable — the reasoning trace, DNA check, and evidence are the asset. Use the API with <code>write_note=true</code> to save a decision note to the vault.</div>`;
+    <div id="decmsg" class="muted small" style="margin-top:6px">The number is disposable — the reasoning trace, DNA check, and evidence are the asset.</div>`;
+}
+async function saveDecision(){
+  const body={question:$('dq').value,decision_type:$('dtype').value,write_note:true,
+    alternatives:ALTS.map(a=>({name:a.name,scores:a.s,dna_conflict:a.dna}))};
+  const d=await j('/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  $('decmsg').innerHTML=d.note?`✅ Saved <code>${d.note.id}</code> to the vault (600-Decisions/).`:'save failed';
+  loadBrief();
 }
 
 boot();
