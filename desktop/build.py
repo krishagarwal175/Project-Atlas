@@ -54,7 +54,7 @@ def main():
     print("[build] running PyInstaller… (first build can take several minutes)")
     pyi.run(args)
     exe = ROOT / "dist" / ("Atlas.exe" if os.name == "nt" else "Atlas")
-    print(f"\n[build] done → {exe}" if exe.exists() else "\n[build] finished (check dist/)")
+    print(f"\n[build] done -> {exe}" if exe.exists() else "\n[build] finished (check dist/)")
 
 
 if __name__ == "__main__":
