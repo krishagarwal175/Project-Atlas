@@ -75,11 +75,15 @@ def wait_for(port: int, timeout: float = 30.0) -> bool:
     return False
 
 
-def start_engine(port: int):
-    # make the app modules importable (dev + frozen)
+def _add_app_to_path():
+    """Make the app/ engine modules importable (dev + frozen)."""
     app_dir = bundle_base() / "app"
-    if app_dir.exists():
+    if app_dir.exists() and str(app_dir) not in sys.path:
         sys.path.insert(0, str(app_dir))
+
+
+def start_engine(port: int):
+    _add_app_to_path()
     import uvicorn
     config = uvicorn.Config("api:app", host="127.0.0.1", port=port, log_level="warning")
     server = uvicorn.Server(config)
@@ -105,14 +109,35 @@ def open_window(url: str):
 
 
 def main():
+    # 1. locate/seed the vault, then bring the app modules into scope
     ensure_vault()
+    _add_app_to_path()
+
+    # 2. deterministic domain boot through the lifecycle kernel (logs + health)
+    import paths, lifecycle
+    P = paths.resolve()
+    logfile = lifecycle.init_logging(P)
+    mgr = lifecycle.LifecycleManager(P)
+    report = mgr.boot()
+    if not report.ready:
+        print(f"[atlas] boot DEGRADED — see {logfile}", file=sys.stderr)
+        for r in report.failed:
+            print(f"  - {r.name}: {r.error}", file=sys.stderr)
+        sys.exit(1)
+
+    # 3. launch the local server, verify it, open the window
     port = free_port(8000)
     start_engine(port)
     url = f"http://127.0.0.1:{port}/"
     if not wait_for(port):
         print("[atlas] engine failed to start", file=sys.stderr)
+        mgr.shutdown()
         sys.exit(1)
-    open_window(url)
+
+    try:
+        open_window(url)          # blocks until the window closes
+    finally:
+        mgr.shutdown()            # 4. graceful shutdown — flush logs, run hooks
 
 
 if __name__ == "__main__":

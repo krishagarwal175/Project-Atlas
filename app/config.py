@@ -8,20 +8,19 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-# Vault path: the `vault/` folder at the repo root, overridable via env var.
-# Local-first: this is the source of truth and lives on your own disk.
-VAULT_PATH = Path(
-    os.environ.get(
-        "ATLAS_VAULT",
-        str(Path(__file__).resolve().parent.parent / "vault"),
-    )
-)
+import paths as _paths
+
+# All locations resolve through the path authority (paths.py) — application vs
+# user-data separation, portable/installed modes, env overrides. No hardcoded paths.
+PATHS = _paths.resolve()
+
+# The markdown vault — source of truth (local-first). Honors ATLAS_VAULT.
+VAULT_PATH = PATHS.vault
 
 # RESERVED (not yet built): a disposable SQLite index over the vault. Deferred by
 # design — parsing the whole vault live is sub-second at current scale (YAGNI).
-# Build this only when parse latency becomes a real, measured problem. See the
-# Architecture Freeze (ADR-002) "deferred, on purpose" note.
-CACHE_DB = Path(__file__).resolve().parent / "cache.sqlite"
+# Lives in the user-data cache dir, never inside the executable. See ADR-002.
+CACHE_DB = PATHS.cache / "cache.sqlite"
 
 # Folders/files ignored by the parser.
 IGNORE_DIRS = {".obsidian", ".git", ".trash"}

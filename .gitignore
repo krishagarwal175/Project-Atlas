@@ -1,5 +1,10 @@
-# App cache — disposable, rebuilt from the vault (ADR-001)
+# User data (external, never committed) — cache/logs/config live beside the app
+# in portable mode. The vault/ is committed (it IS the tracked knowledge base).
+/cache/
+/logs/
+/config/
 app/cache.sqlite
+**/cache.sqlite
 **/__pycache__/
 *.pyc
 
