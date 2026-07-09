@@ -12,6 +12,7 @@ from functools import lru_cache
 
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 import config
@@ -28,6 +29,13 @@ app = FastAPI(
     version="0.1.0",
     description="Knowledge → Understanding → Tested Theories → High-quality Decisions. "
                 "The Obsidian vault is the source of truth; this is a rebuildable compute layer.",
+)
+
+
+# Local dev only: the dashboard is a static file opened from disk, so allow all
+# origins. This backend is single-user and localhost-bound; no auth needed yet.
+app.add_middleware(
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
 )
 
 

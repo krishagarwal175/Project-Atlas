@@ -8,6 +8,13 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — Phase 3 (part 2): Web dashboard (daily operating environment)
+- **What:** `frontend/index.html` — a single self-contained dashboard (no build step, no npm) over the API, plus CORS on the backend and a `.claude/launch.json`. Implements the "morning brief" (notes, confidence drifts, untriaged signals, audit issues), vault search, the confidence board (derived states + drift alerts), the market-signal inbox, the knowledge graph (centrality + path finder), and the decision engine (editable alternatives → ranked table with DNA guardrail + fragility). Verified live in-browser: header "60 notes · vault ok", all sections populated, search/decide/graph/epistemics all functional.
+- **Why:** Turns the system into the daily environment the vision calls for — open it in the morning, see what changed, decide, all in one place — at zero cost and zero toolchain.
+- **Tradeoffs:** vanilla single-file HTML rather than React/TS/Tailwind — instantly usable at single-user scale; a framework rebuild is deferred to Phase 4 (multi-tenant).
+- **Impacted modules:** new frontend surface; backend gained CORS.
+- **Follow-ups:** [ ] "write decision note" button in the UI · [ ] triage-signal action (link a signal to a Q/Theory from the UI) · [ ] optional Ollama narrative summaries (last Phase-3 piece).
+
 ## 2026-07-09 — Phase 3 (part 1): Epistemics + Graph Analytics
 - **What:** `backend/epistemics.py` — **Confidence & Contradiction engine** (Module 10): recomputes each claim's confidence state from its Evidence Ledger + contradiction-search outcomes + freshness, enforcing the strict rule that a claim can't exceed `emerging` without a *survived* contradiction search; reports drift, contested, and decaying. `backend/graph.py` — **Graph Analytics** (Module 4): NetworkX over the wikilink graph for centrality, pathfinding, neighborhoods, clusters. Folded drift detection into the Governance Bot; added `/epistemics`, `/graph/*` API endpoints and `cli.py epistemics|graph`.
 - **Why:** Confidence stops being a hand-set label and becomes a derived, explainable, self-correcting state; the graph exposes structure (most-central ideas, how concepts connect) Obsidian can't compute.

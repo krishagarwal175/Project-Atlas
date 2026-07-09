@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Acredemia Research OS</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --tx:#e6e9ef; --mut:#9aa4b2; --acc:#5b9dff; --good:#37b26a; --warn:#e0a132; --bad:#e05a5a;
+    --rad:10px;
+  }
+  @media (prefers-color-scheme:light){
+    :root{--bg:#f6f7f9;--panel:#fff;--panel2:#f0f2f5;--line:#e2e6ec;--tx:#1a1d23;--mut:#5c6570;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+  header{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;position:sticky;top:0;background:var(--bg);z-index:5}
+  header h1{font-size:17px;margin:0;font-weight:650}
+  header .sub{color:var(--mut);font-size:12px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--bad);display:inline-block}
+  .dot.ok{background:var(--good)}
+  main{max-width:1180px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:16px}
+  .card.wide{grid-column:1/-1}
+  .card h2{margin:0 0 12px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  input,select,button,textarea{font:inherit;color:var(--tx);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+  input:focus,textarea:focus{outline:1px solid var(--acc)}
+  button{cursor:pointer;background:var(--acc);color:#fff;border:none;font-weight:600}
+  button.sec{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}
+  button:hover{filter:brightness(1.08)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stat{background:var(--panel2);border-radius:8px;padding:12px;text-align:center}
+  .stat b{font-size:22px;display:block}
+  .stat span{color:var(--mut);font-size:11px}
+  .pill{font-size:11px;padding:2px 7px;border-radius:20px;border:1px solid var(--line);color:var(--mut)}
+  .pill.good{color:var(--good);border-color:var(--good)}
+  .pill.warn{color:var(--warn);border-color:var(--warn)}
+  .pill.bad{color:var(--bad);border-color:var(--bad)}
+  ul{list-style:none;margin:0;padding:0}
+  li{padding:8px 0;border-bottom:1px solid var(--line)}
+  li:last-child{border:0}
+  .muted{color:var(--mut)}
+  .k{color:var(--mut);font-size:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase}
+  .win{color:var(--good);font-weight:700}
+  .small{font-size:12px}
+  .tag{font-size:11px;color:var(--mut)}
+  code{background:var(--panel2);padding:1px 5px;border-radius:5px;font-size:12px}
+  a{color:var(--acc);text-decoration:none}
+  .flex{display:flex;gap:16px;flex-wrap:wrap}
+  .scores{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
+  .scores label{font-size:10px;color:var(--mut);text-align:center}
+  .scores input{padding:5px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <span class="dot" id="conn"></span>
+  <h1>Acredemia Research OS</h1>
+  <span class="sub" id="hdr">connecting…</span>
+  <span style="flex:1"></span>
+  <span class="k">API</span>
+  <input id="api" value="http://127.0.0.1:8000" style="width:190px" />
+  <button class="sec" onclick="boot()">reconnect</button>
+</header>
+
+<main>
+  <!-- MORNING BRIEF -->
+  <section class="card wide">
+    <h2>🌅 Morning brief</h2>
+    <div class="grid3" id="brief"><div class="stat"><b>—</b><span>loading</span></div></div>
+  </section>
+
+  <!-- SEARCH -->
+  <section class="card">
+    <h2>🔎 Ask the vault</h2>
+    <div class="row">
+      <input id="q" placeholder="e.g. should we launch a referral program" style="flex:1" />
+      <button onclick="doSearch()">Search</button>
+    </div>
+    <ul id="results" class="small"></ul>
+  </section>
+
+  <!-- CONFIDENCE BOARD -->
+  <section class="card">
+    <h2>🧠 Confidence board (derived from evidence)</h2>
+    <ul id="epi" class="small"></ul>
+  </section>
+
+  <!-- MARKET SIGNALS -->
+  <section class="card">
+    <h2>📡 Market signals — needs triage</h2>
+    <ul id="signals" class="small"></ul>
+  </section>
+
+  <!-- GRAPH -->
+  <section class="card">
+    <h2>🕸 Knowledge graph</h2>
+    <div class="k" style="margin-bottom:6px">Most central ideas</div>
+    <ul id="central" class="small"></ul>
+    <div class="row" style="margin-top:10px">
+      <input id="pa" placeholder="from" style="flex:1" />
+      <input id="pb" placeholder="to" style="flex:1" />
+      <button class="sec" onclick="doPath()">Path</button>
+    </div>
+    <div id="path" class="small muted" style="margin-top:8px"></div>
+  </section>
+
+  <!-- DECISION ENGINE -->
+  <section class="card wide">
+    <h2>🎯 Decision engine</h2>
+    <div class="row">
+      <input id="dq" placeholder="decision question" style="flex:1" value="Which college tier should we target as the beachhead?" />
+      <select id="dtype"></select>
+      <button onclick="doDecide()">Compare</button>
+    </div>
+    <div class="flex" id="alts" style="margin-top:12px"></div>
+    <div id="decision" style="margin-top:14px"></div>
+  </section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const api=()=>$('api').value.replace(/\/$/,'');
+const DIMS=['impact','confidence','alignment','cost','risk','effort','time'];
+const badgeFor=(s)=>({speculative:'',emerging:'',supported:'good','well-tested':'good',institutional:'good'}[s]||'');
+
+async function j(path,opts){const r=await fetch(api()+path,opts);if(!r.ok)throw new Error(r.status);return r.json();}
+
+async function boot(){
+  try{
+    const h=await j('/health');
+    $('conn').classList.add('ok');
+    $('hdr').textContent=`${h.notes} notes · search:${h.search_backend} · vault ok`;
+    loadBrief();loadEpi();loadSignals();loadCentral();loadPresets();renderAlts();
+  }catch(e){
+    $('conn').classList.remove('ok');
+    $('hdr').textContent='API offline — start it: cd backend && python cli.py serve';
+  }
+}
+
+async function loadBrief(){
+  const [a,e,n]=await Promise.all([j('/audit'),j('/epistemics'),j('/notes')]);
+  const sig=(await j('/notes?type=market-signal')).count;
+  const hi=a.summary.high||0,md=a.summary.medium||0,lo=a.summary.low||0;
+  $('brief').innerHTML=`
+    <div class="stat"><b>${n.count}</b><span>notes in vault</span></div>
+    <div class="stat"><b>${e.drift}</b><span>confidence drifts</span></div>
+    <div class="stat"><b>${sig}</b><span>market signals</span></div>
+    <div class="stat"><b style="color:${hi?'var(--bad)':'var(--tx)'}">${hi}</b><span>high issues</span></div>
+    <div class="stat"><b>${md}</b><span>medium issues</span></div>
+    <div class="stat"><b>${lo}</b><span>low issues</span></div>`;
+}
+
+async function doSearch(){
+  const q=$('q').value.trim();if(!q)return;
+  const d=await j('/search?q='+encodeURIComponent(q)+'&k=8');
+  $('results').innerHTML=d.results.map(r=>`<li>
+    <b>${r.title}</b> <span class="pill">${r.type}</span>
+    <span class="pill ${badgeFor(r.confidence)}">${r.confidence}</span>
+    <span class="tag">score ${r.score}</span><br>
+    <span class="muted">${r.snippet}</span></li>`).join('')||'<li class="muted">no matches</li>';
+}
+$('q')&&($('q').onkeydown=e=>{if(e.key==='Enter')doSearch();});
+
+async function loadEpi(){
+  const d=await j('/epistemics');
+  $('epi').innerHTML=d.assessments.map(a=>{
+    const b=(a.contested?'⚑':'')+(a.decaying?'⌛':'');
+    const drift=a.drift?`<span class="pill bad">drift → ${a.derived}</span>`:'';
+    return `<li>${b} <b>${a.note}</b>
+      <span class="pill ${badgeFor(a.derived)}">${a.derived}</span>${drift}<br>
+      <span class="muted">${a.derivation}</span></li>`;
+  }).join('');
+}
+
+async function loadSignals(){
+  const d=await j('/notes?type=market-signal');
+  $('signals').innerHTML=d.notes.map(s=>`<li><b>${s.title}</b>
+    <span class="pill warn">untriaged</span></li>`).join('')||'<li class="muted">inbox clear</li>';
+}
+
+async function loadCentral(){
+  const d=await j('/graph/summary');
+  $('central').innerHTML=d.top_central.slice(0,8).map(([n,s])=>
+    `<li><span class="tag">${s.toFixed(3)}</span> ${n}</li>`).join('');
+}
+async function doPath(){
+  const a=$('pa').value.trim(),b=$('pb').value.trim();if(!a||!b)return;
+  const d=await j('/graph/path?a='+encodeURIComponent(a)+'&b='+encodeURIComponent(b));
+  $('path').innerHTML=d.found?d.path.join(' &nbsp;→&nbsp; '):'no path found';
+}
+
+async function loadPresets(){
+  const d=await j('/decision/presets');
+  $('dtype').innerHTML=Object.keys(d.weight_presets).map(k=>`<option>${k}</option>`).join('');
+  $('dtype').value='channel-choice';
+}
+const ALTS=[
+  {name:'Tier-2 colleges first',s:{impact:8,confidence:5,alignment:8,cost:4,risk:5,effort:5,time:4},dna:''},
+  {name:'Tier-1 colleges first',s:{impact:6,confidence:6,alignment:5,cost:6,risk:6,effort:6,time:6},dna:''},
+];
+function renderAlts(){
+  $('alts').innerHTML=ALTS.map((a,i)=>`<div class="card" style="flex:1;min-width:320px;background:var(--panel2)">
+    <input value="${a.name}" onchange="ALTS[${i}].name=this.value" style="width:100%"/>
+    <div class="scores">${DIMS.map(d=>`<div><label>${d.slice(0,4)}</label>
+      <input type="number" min="0" max="10" value="${a.s[d]}" onchange="ALTS[${i}].s['${d}']=+this.value"/></div>`).join('')}</div>
+    <input placeholder="DNA conflict (optional, e.g. NN2)" value="${a.dna}" onchange="ALTS[${i}].dna=this.value" style="width:100%;margin-top:8px"/>
+  </div>`).join('');
+}
+async function doDecide(){
+  const body={question:$('dq').value,decision_type:$('dtype').value,
+    alternatives:ALTS.map(a=>({name:a.name,scores:a.s,dna_conflict:a.dna}))};
+  const d=await j('/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const dims=Object.keys(d.weights);
+  const rows=d.ranked.map(r=>`<tr>
+    <td>${r.rank}</td>
+    <td class="${r.rank===1&&!r.dna_conflict?'win':''}">${r.name}${r.dna_conflict?' <span class="pill bad">⚠DNA</span>':''}</td>
+    ${dims.map(x=>`<td>${r.contributions[x].toFixed(3)}</td>`).join('')}
+    <td><b>${r.total.toFixed(3)}</b></td></tr>`).join('');
+  const frag=d.is_fragile?`<span class="pill warn">fragile — ${d.fragile_reason}</span>`:'<span class="pill good">robust</span>';
+  const dna=d.dna_flags.length?`<div class="small" style="margin-top:6px">⚠ ${d.dna_flags.join('; ')}</div>`:'';
+  $('decision').innerHTML=`<div class="row"><b>Winner: <span class="win">${d.winner}</span></b> ${frag}</div>${dna}
+    <table style="margin-top:10px"><tr><th>#</th><th>alternative</th>${dims.map(x=>`<th>${x.slice(0,4)}</th>`).join('')}<th>total</th></tr>${rows}</table>
+    <div class="muted small" style="margin-top:6px">The number is disposable — the reasoning trace, DNA check, and evidence are the asset. Use the API with <code>write_note=true</code> to save a decision note to the vault.</div>`;
+}
+
+boot();
+</script>
+</body>
+</html>
