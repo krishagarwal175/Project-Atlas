@@ -60,6 +60,14 @@ def dashboard():
     return {"atlas": "ok", "ui": "not bundled — open ui/index.html manually"}
 
 
+@app.get("/tokens.css", include_in_schema=False)
+def design_tokens():
+    css = _ui_dir() / "tokens.css"
+    if css.exists():
+        return FileResponse(str(css), media_type="text/css")
+    return JSONResponse(status_code=404, content={"error": "tokens.css not found"})
+
+
 @lru_cache(maxsize=1)
 def _engine() -> SearchEngine:
     return SearchEngine()
