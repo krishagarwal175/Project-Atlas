@@ -121,6 +121,14 @@ def main():
             drift = "  <<< DRIFT" if a.drift else ""
             print(f"{badge} {a.note[:50]:50} {a.stated:12}→ derived {a.derived:12}{drift}")
             print(f"      {a.derivation}")
+    elif cmd == "synthesize":
+        from synthesis import synthesize
+        cands = synthesize(use_ollama="--ollama" in rest)
+        print(f"{len(cands)} candidate pattern(s):\n")
+        for i, c in enumerate(cands, 1):
+            tag = "NEW" if c.novelty == "new" else f"covered by {c.existing_pattern}"
+            print(f"[{i}] ({tag}) {', '.join(c.companies)}  tags={c.shared_tags or '—'}")
+            print(f"    {c.draft}\n")
     elif cmd == "graph":
         from graph import summary
         s = summary()

@@ -97,6 +97,14 @@
     <ul id="signals" class="small"></ul>
   </section>
 
+  <!-- SYNTHESIS -->
+  <section class="card wide">
+    <h2>💡 Synthesis — patterns drafted from case studies</h2>
+    <div class="row"><button onclick="loadSynth()">Synthesize</button>
+      <span class="muted small">clusters case studies → drafts candidate patterns you review &amp; promote</span></div>
+    <ul id="synth" class="small" style="margin-top:10px"></ul>
+  </section>
+
   <!-- GRAPH -->
   <section class="card">
     <h2>🕸 Knowledge graph</h2>
@@ -201,6 +209,22 @@ async function triage(signal,i){
   loadSignals();loadBrief();loadCentral();
 }
 
+async function loadSynth(){
+  $('synth').innerHTML='<li class="muted">clustering…</li>';
+  const d=await j('/synthesize');
+  $('synth').innerHTML=d.candidates.map(c=>{
+    const badge=c.novelty==='new'?'<span class="pill good">NEW</span>':`<span class="pill">covered by ${c.existing_pattern}</span>`;
+    const btn=c.novelty==='new'?`<button class="sec" onclick='promoteSynth(${JSON.stringify(c.members)})'>promote → pattern</button>`:'';
+    return `<li>${badge} <b>${c.companies.join(' + ')}</b>
+      <span class="tag">tags: ${c.shared_tags.join(', ')||'—'}</span> ${btn}<br>
+      <span class="muted">${c.draft}</span></li>`;
+  }).join('')||'<li class="muted">need ≥2 case studies to synthesize</li>';
+}
+async function promoteSynth(members){
+  const r=await j('/synthesize/promote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({members})});
+  alert(r.ok?`Draft pattern ${r.id} written to the vault (review before accepting).`:'promote failed');
+  loadSynth();loadBrief();
+}
 async function loadCentral(){
   const d=await j('/graph/summary');
   $('central').innerHTML=d.top_central.slice(0,8).map(([n,s])=>

@@ -8,6 +8,14 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — Understanding / Synthesis engine (Module 5→9)
+- **What:** `backend/synthesis.py` — clusters case studies (agglomerative, cosine, move+tag-weighted with generic-growth-word stopwording to avoid spurious "*-driven-growth" links) and drafts **candidate patterns** ("across these cases, X recurs"), deduped against existing patterns (NEW vs covered). Optional local-Ollama prose, deterministic fallback. Human promotes a candidate → draft pattern note (`status: candidate`); never auto-promoted. Endpoints `/synthesize`, `/synthesize/promote`; `cli.py synthesize`; dashboard **Synthesis panel** with promote buttons.
+- **Loop demonstrated end to end:** added a real 2nd marketplace case ([[Groupon-discount-growth]]); synthesis surfaced a **NEW {Groupon, Homejoy}** candidate; accepted it by strengthening [[P-marketplace-leakage-kills-unit-economics]] to 2 cases → the Governance Bot's weak-pattern finding cleared → re-synthesis now marks the cluster **covered** (dedup working). Synthesis proposed → human accepted → governance cleared.
+- **Why:** This is the "synthesis, not storage" capability — the system now drafts *understanding* from accumulated cases, the highest-leverage part of the Understanding Layer.
+- **Tradeoffs:** at tiny N text clustering is coarse and can propose spurious clusters (documented) — which is exactly why candidates are human-reviewed, never auto-promoted.
+- **Impacted modules:** Understanding(5→9); consumes case studies, dedups vs Patterns(4-adjacent).
+- **Follow-ups:** [ ] run a contradiction search on the strengthened marketplace pattern before promoting it to a theory · [ ] richer clustering once the case library grows (embeddings).
+
 ## 2026-07-09 — Phase 3 (part 3): UI actions + optional local narrative layer
 - **What:** `backend/vault_write.py` (safe, surgical, human-initiated writes back to source notes — frontmatter field + section append), `backend/narrative.py` (optional **local Ollama** summaries with a deterministic extractive fallback when Ollama is absent — narrative only, never alters a score/confidence). New endpoints `POST /triage`, `GET /summarize`. Dashboard gained a **💾 Save decision note** button (writes a real decision note to `600-Decisions/`) and **per-signal triage** controls (link a signal to a Question/Theory, sourced from the live governance audit). All verified live in-browser: saved a decision note and triaged signals, watching the untriaged count drop 4→1.
 - **Why:** Closes the loop from the dashboard — you can now act (decide, triage) without leaving the daily environment, and get plain-English summaries with zero cloud dependency.

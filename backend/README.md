@@ -18,6 +18,10 @@ python cli.py parse                  # parse & summarize the vault
 python cli.py search "referral program virality"
 python cli.py audit --write          # run Governance Bot, write audit note to vault
 python cli.py ingest                 # pull free RSS market signals into the vault
+python cli.py decide                 # demo the Decision Engine
+python cli.py synthesize             # cluster case studies into candidate patterns
+python cli.py epistemics             # derived confidence states + drift
+python cli.py graph                  # centrality / graph summary
 python cli.py stats                  # vault health snapshot
 python cli.py serve                  # start API on :8000 (docs at /docs)
 ```
@@ -27,6 +31,12 @@ python cli.py serve                  # start API on :8000 (docs at /docs)
 |------|--------|------|
 | `vault.py` | substrate parser | markdown + YAML + wikilinks + Evidence Ledger → `Note` objects |
 | `search.py` | Retrieval (3) | TF-IDF / embeddings / keyword, confidence+freshness aware |
+| `synthesis.py` | Understanding (5→9) | clusters case studies → drafts candidate patterns (dedup vs existing) |
+| `epistemics.py` | Confidence/Contradiction (10,11) | derives confidence states from Evidence Ledgers |
+| `graph.py` | Graph Analytics (4) | NetworkX centrality, pathfinding, clusters |
+| `decision_engine.py` | Decision Engine (6) | WSM + DNA guardrail + sensitivity → decision note |
+| `narrative.py` | narrative (§37) | optional local Ollama summaries, deterministic fallback |
+| `vault_write.py` | — | safe human-initiated writes (triage, promote) |
 | `governance.py` | Governance Bot (8) | deterministic health audit → `900-Meta/Reviews/` |
 | `market_intel.py` | Market Intel (1) | stdlib RSS ingest → relevance-routed signal notes |
 | `api.py` | REST surface | FastAPI; `/search /audit /ingest /notes /note/{id} /health` |

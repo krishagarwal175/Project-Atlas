@@ -23,6 +23,7 @@ import epistemics
 import graph as graphmod
 import narrative
 import vault_write
+import synthesis
 from search import SearchEngine
 from vault import load_vault, build_backlinks
 
@@ -182,6 +183,27 @@ def triage(body: TriageIn):
     ok = vault_write.triage_signal(body.signal, body.target, body.stance)
     _reset_cache()
     return {"ok": ok, "signal": body.signal, "target": body.target}
+
+
+@app.get("/synthesize")
+def synthesize(use_ollama: bool = Query(False)):
+    cands = synthesis.synthesize(use_ollama=use_ollama)
+    return {"count": len(cands), "candidates": [c.__dict__ for c in cands]}
+
+
+class PromoteIn(BaseModel):
+    members: list[str]
+
+
+@app.post("/synthesize/promote")
+def synthesize_promote(body: PromoteIn):
+    cands = synthesis.synthesize()
+    match = next((c for c in cands if set(c.members) == set(body.members)), None)
+    if not match:
+        return JSONResponse(status_code=404, content={"error": "no current candidate with those members"})
+    path, pid = synthesis.promote_candidate(match)
+    _reset_cache()
+    return {"ok": True, "id": pid, "path": str(path)}
 
 
 @app.get("/summarize")
