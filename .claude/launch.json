@@ -8,6 +8,12 @@
       "port": 5173
     },
     {
+      "name": "landing",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "landing"],
+      "port": 5500
+    },
+    {
       "name": "api",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "uvicorn", "api:app", "--host", "127.0.0.1", "--port", "8000"],
