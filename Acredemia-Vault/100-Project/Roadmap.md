@@ -26,10 +26,12 @@ Folder tree, templates, governance, taxonomy, Strategic-DNA stubs, worked seed l
 - `POST /decide`, `GET /decision/presets`, `cli.py decide`.
 - *Remaining for the experiment loop:* forced-retrospective enforcement is modelled in the template + governance; wiring a generated decision straight into its Question ledger is a follow-up.
 
-## Phase 3 — Graph Analytics + Understanding/Contradiction/Confidence
-- NetworkX over parsed wikilinks (centrality, pathfinding, clusters) in a thin web dashboard.
-- Confidence & Contradiction Engine over the Evidence Ledger (derived states, auto-opened contradiction tasks).
-- Freshness/Decay service. Ollama-assisted Theory drafting (optional, human-approved).
+## 🚧 Phase 3 — Graph Analytics + Understanding/Contradiction/Confidence
+- ✅ NetworkX over parsed wikilinks (centrality, pathfinding, neighborhoods, clusters) — `backend/graph.py`, `/graph/*`.
+- ✅ Confidence & Contradiction Engine over the Evidence Ledger (derived, self-correcting states) — `backend/epistemics.py`, `/epistemics`; drift folded into the Governance Bot.
+- ✅ Freshness/Decay recomputation (caps confidence when lapsed).
+- ⏳ Thin web dashboard over `/graph` + `/epistemics` (next).
+- ⏳ Ollama-assisted Theory drafting (optional, local, human-approved) — last piece.
 
 ## Phase 4 — Enterprise extensibility
 - Multi-vault/tenant, roles, hosted tier. "Your knowledge is portable markdown you own" becomes the sales pitch.

@@ -121,10 +121,6 @@ def audit(notes: list[Note], today: date | None = None) -> list[Finding]:
             if rank >= _conf_rank("supported") and not searched:
                 findings.append(Finding("high", "unchallenged-theory", n.filename,
                                         f"confidence '{n.confidence_state}' but no contradiction search found"))
-            # 9b. Confidence drift: claims a state but ledger has no supporting evidence
-            if rank >= _conf_rank("supported") and not any(l.stance == "supports" for l in n.ledger):
-                findings.append(Finding("medium", "confidence-drift", n.filename,
-                                        f"claims '{n.confidence_state}' but ledger has no supporting evidence"))
 
         # 10. Unanswered questions open > 30 days with no evidence & no experiment
         if t == "question" and n.status == "open":
@@ -165,6 +161,16 @@ def audit(notes: list[Note], today: date | None = None) -> list[Finding]:
         if n.freshness in ("stale", "needs-review", "historical-only") and t not in config.STRUCTURAL_TYPES:
             findings.append(Finding("low", "flagged-freshness", n.filename,
                                     f"freshness set to '{n.freshness}'"))
+
+    # Confidence drift — derived from Evidence Ledgers by the epistemics engine.
+    try:
+        import epistemics
+        for a in epistemics.assess_all(notes, today):
+            if a.drift:
+                findings.append(Finding("medium", "confidence-drift", a.note,
+                                        f"stated '{a.stated}' but ledger derives '{a.derived}' ({a.derivation})"))
+    except Exception:
+        pass  # epistemics is optional; governance still runs without it
 
     sev_order = {"high": 0, "medium": 1, "low": 2}
     findings.sort(key=lambda f: (sev_order.get(f.severity, 9), f.category, f.note))

@@ -114,6 +114,21 @@ def main():
         _stats()
     elif cmd == "decide":
         _demo_decision()
+    elif cmd == "epistemics":
+        from epistemics import assess_all
+        for a in assess_all():
+            badge = ("⚑" if a.contested else " ") + ("⌛" if a.decaying else " ")
+            drift = "  <<< DRIFT" if a.drift else ""
+            print(f"{badge} {a.note[:50]:50} {a.stated:12}→ derived {a.derived:12}{drift}")
+            print(f"      {a.derivation}")
+    elif cmd == "graph":
+        from graph import summary
+        s = summary()
+        print(f"{s['nodes']} nodes, {s['edges']} edges, {s['components']} component(s), "
+              f"largest={s['largest_component']}, {s['isolates']} isolate(s)\n")
+        print("Most central ideas:")
+        for name, score in s["top_central"]:
+            print(f"  {score:.3f}  {name}")
     elif cmd == "serve":
         _serve()
     else:

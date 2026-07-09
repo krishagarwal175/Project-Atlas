@@ -18,6 +18,8 @@ import config
 import governance
 import market_intel
 import decision_engine
+import epistemics
+import graph as graphmod
 from search import SearchEngine
 from vault import load_vault, build_backlinks
 
@@ -145,6 +147,29 @@ def decide(body: DecideIn):
         _reset_cache()
         payload["note"] = {"id": dec_id, "path": str(path)}
     return payload
+
+
+@app.get("/epistemics")
+def epistemics_assess():
+    items = epistemics.assess_all()
+    return {"count": len(items), "drift": sum(1 for a in items if a.drift),
+            "assessments": [a.__dict__ for a in items]}
+
+
+@app.get("/graph/summary")
+def graph_summary():
+    return graphmod.summary()
+
+
+@app.get("/graph/path")
+def graph_path(a: str, b: str):
+    p = graphmod.path(a, b)
+    return {"a": a, "b": b, "path": p, "found": p is not None}
+
+
+@app.get("/graph/neighbors")
+def graph_neighbors(node: str, radius: int = Query(1, ge=1, le=3)):
+    return {"node": node, "radius": radius, "neighbors": graphmod.neighbors(node, radius=radius)}
 
 
 @app.post("/ingest")

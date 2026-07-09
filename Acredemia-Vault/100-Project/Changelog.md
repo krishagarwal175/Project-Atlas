@@ -8,6 +8,15 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — Phase 3 (part 1): Epistemics + Graph Analytics
+- **What:** `backend/epistemics.py` — **Confidence & Contradiction engine** (Module 10): recomputes each claim's confidence state from its Evidence Ledger + contradiction-search outcomes + freshness, enforcing the strict rule that a claim can't exceed `emerging` without a *survived* contradiction search; reports drift, contested, and decaying. `backend/graph.py` — **Graph Analytics** (Module 4): NetworkX over the wikilink graph for centrality, pathfinding, neighborhoods, clusters. Folded drift detection into the Governance Bot; added `/epistemics`, `/graph/*` API endpoints and `cli.py epistemics|graph`.
+- **Why:** Confidence stops being a hand-set label and becomes a derived, explainable, self-correcting state; the graph exposes structure (most-central ideas, how concepts connect) Obsidian can't compute.
+- **Notable:** the engine caught a hand-authored `supported` on [[T-two-sided-incentives-drive-referral-virality]] as an overclaim (no *survived* contradiction search on the revised claim) — **the system corrected its author**; the theory was set back to `emerging`/⚑contested with the reason logged in its evolution history.
+- **Tradeoffs:** confidence weights/thresholds are heuristic (documented in `epistemics.py`), tuned for explainability over precision; patterns cap at `emerging` by design (to rise they must become theories).
+- **Impacted modules:** Epistemics(10,11), Graph(4), Governance(8).
+- **Future implications:** a thin web dashboard (Phase 3 part 2) can render the graph + confidence states directly from these endpoints; optional Ollama theory-drafting remains the last Phase-3 piece.
+- **Follow-ups:** [ ] run the follow-up contradiction search on the revised referral theory · [ ] thin web dashboard over `/graph` + `/epistemics`.
+
 ## 2026-07-09 — Phase 2 Decision Engine built
 - **What:** `backend/decision_engine.py` — Weighted Sum Model with min-max normalization (direction-aware: cost/risk/effort/time inverted), editable weight presets per decision type (config, not code), a **Strategic DNA guardrail** that demotes any alternative violating a Non-Negotiable below all clean options, a deterministic **sensitivity/fragility** pass that names the dimension whose ±20% move flips the winner, auto-pulled supporting evidence via retrieval, and **decision-note emission** (full arithmetic table + quality rubric + empty outcome). Exposed via `POST /decide`, `GET /decision/presets`, and `cli.py decide`. Generated [[DEC-2026-002-tier-2-colleges-first]] as a live example.
 - **Why:** Turns a strategic choice into an explainable, DNA-checked, fragility-aware comparison that lands as a permanent decision note — the reasoning trace, not the score, is the asset.

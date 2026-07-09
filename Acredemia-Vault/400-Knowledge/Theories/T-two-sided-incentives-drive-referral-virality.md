@@ -3,7 +3,7 @@ type: theory
 id: T-two-sided-incentives-drive-referral-virality
 title: "Two-sided referrals drive virality when the referred user has standalone utility"
 status: contested
-confidence-state: supported
+confidence-state: emerging
 contested: true
 freshness: fresh
 last-reviewed: 2026-07-09
@@ -21,7 +21,7 @@ created: 2026-07-09
 A referral program produces self-sustaining viral growth when it is **two-sided** AND **the referred user has an immediate standalone reason to use the product.** Reward *type* (product-native vs cash) is a **boundary condition**, not the driver.
 
 ## Confidence derivation (explainable)
-**Supported, ⚑ contested** — 2 supporting cases ([[Dropbox-referral]], [[PayPal-referral]]) and **one contradiction search survived by the revised core claim** (no counterexample to "two-sided + standalone utility" found). Not yet **Well-Tested**: only 2 cases and one search; the reframed claim needs a fresh contradiction attempt. `contested` flag retained because the split is recent and the original combined claim was broken.
+**Emerging, ⚑ contested** — 2 supporting cases ([[Dropbox-referral]], [[PayPal-referral]]), but the only contradiction search so far ([[CON-cash-referrals-that-worked]]) *broke* the original claim; **no search has yet survived the *revised* claim.** Per the strict rule in [[Vault-Governance]], a claim cannot exceed `emerging` without a survived contradiction search — so despite strong supporting weight this stays `emerging` until the follow-up search runs. (The epistemics engine flagged an earlier hand-authored `supported` as an overclaim and it was corrected — the system correcting its author.)
 
 ## Evidence Ledger
 | date | source | stance | weight | note |
@@ -45,4 +45,5 @@ For a referred student, is there immediate standalone value (get verified, get s
 
 ## Evolution history
 - 2026-07-09 — created as candidate (Emerging) from [[P-two-sided-incentive-loop]].
-- 2026-07-09 — contradiction search refuted "product-native" requirement; claim reframed around **referred-user standalone utility**; promoted Emerging→Supported (survived a search) but flagged `contested` pending a fresh search on the new claim.
+- 2026-07-09 — contradiction search refuted "product-native" requirement; claim reframed around **referred-user standalone utility**; briefly hand-set to Supported.
+- 2026-07-09 — **epistemics engine flagged the Supported label as drift** (no *survived* contradiction search on the revised claim); corrected back to Emerging/⚑contested pending a fresh search. Follow-up: run a contradiction search on the revised "two-sided + standalone-utility" claim.
