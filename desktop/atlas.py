@@ -36,7 +36,12 @@ def bundle_base() -> Path:
 
 
 def ensure_vault() -> Path:
-    """Use an existing vault next to the app; else seed one from the bundle."""
+    """Pick the vault, in priority order:
+    1. an explicit ATLAS_VAULT env var (point Atlas at any vault you like),
+    2. a `vault/` next to the app/exe (seeded from the bundle on first run)."""
+    env = os.environ.get("ATLAS_VAULT")
+    if env:
+        return Path(env)
     vault = app_base() / "vault"
     if not vault.exists():
         seed = bundle_base() / "vault"

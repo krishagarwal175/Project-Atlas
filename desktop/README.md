@@ -29,6 +29,15 @@ python desktop/build.py
 2. Starts the engine (FastAPI) on `127.0.0.1` (auto-picks a free port).
 3. Opens a native window at that address (falls back to your browser if no webview).
 
+## Which vault does it use?
+- **`Atlas.bat` / `python desktop/atlas.py`** → your **repo `vault/`** (your real, live data). Best for daily use.
+- **`dist/Atlas.exe`** → a `vault/` **next to the exe** (seeded on first run) — portable/distributable.
+- **Override anytime:** set the `ATLAS_VAULT` env var to point at any vault. e.g. to make the exe use your repo vault:
+  ```powershell
+  $env:ATLAS_VAULT = "D:\OneDrive\Desktop\Miniature-Projects\Project Atlas\vault"; .\dist\Atlas.exe
+  ```
+  (Or simply move `Atlas.exe` into the project root and run it there.)
+
 ## Notes
 - Fully offline except Market Intel (`ingest`), which merely enhances.
 - `dist/` and `build/` are git-ignored — the binary isn't committed (it's rebuildable).
