@@ -8,6 +8,15 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — Phase 2 Decision Engine built
+- **What:** `backend/decision_engine.py` — Weighted Sum Model with min-max normalization (direction-aware: cost/risk/effort/time inverted), editable weight presets per decision type (config, not code), a **Strategic DNA guardrail** that demotes any alternative violating a Non-Negotiable below all clean options, a deterministic **sensitivity/fragility** pass that names the dimension whose ±20% move flips the winner, auto-pulled supporting evidence via retrieval, and **decision-note emission** (full arithmetic table + quality rubric + empty outcome). Exposed via `POST /decide`, `GET /decision/presets`, and `cli.py decide`. Generated [[DEC-2026-002-tier-2-colleges-first]] as a live example.
+- **Why:** Turns a strategic choice into an explainable, DNA-checked, fragility-aware comparison that lands as a permanent decision note — the reasoning trace, not the score, is the asset.
+- **Tradeoffs:** WSM only for now (AHP/TOPSIS deferred to an advanced mode); DNA conflicts are declared per-alternative by the user rather than auto-detected (auto-detection needs NLP against Non-Negotiables — a later refinement).
+- **Impacted modules:** Decision Engine(6), consumes Retrieval(3) and Strategic-DNA(12).
+- **Future implications:** Phase 3 confidence/contradiction compute and graph analytics build on the same notes; the decision note already carries the quality-vs-outcome split the calibration view will read.
+- **Follow-ups:** [ ] auto-detect DNA conflicts via keyword/embedding match against Non-Negotiables · [ ] wire the generated decision back to its Question's evidence ledger.
+- **Open questions:** should weight presets be per-decision editable in a UI, or stay config-level for now.
+
 ## 2026-07-09 — Phase 1 backend built (substrate gets a brain)
 - **What:** Built the compute layer in `backend/` — vault parser (markdown+YAML+wikilinks+Evidence Ledger), Retrieval (TF-IDF now, embeddings-ready), Governance Bot (deterministic health audit), Market Intel (stdlib RSS ingest, relevance-routed), FastAPI REST surface, unified CLI. Also filled Strategic-DNA + Company-Profile with review-ready drafts; added case studies (PayPal, Slack, Figma, Homejoy failure) and two patterns; **evolved theory [[T-two-sided-incentives-drive-referral-virality]] via contradiction search [[CON-cash-referrals-that-worked]]** (refuted the "product-native" requirement, reframed around referred-user standalone utility).
 - **Why:** Makes the vault searchable, auditable, and fed by market signals — while keeping every service reading/writing the same markdown files. Demonstrates the epistemic loop working on real content.

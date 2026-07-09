@@ -55,6 +55,37 @@ RSS_FEEDS = [
     ("VentureBeat", "https://venturebeat.com/feed/"),
 ]
 
+# --- Decision Engine (Phase 2) -------------------------------------------
+# Dimensions and their direction. "+" = higher is better; "-" = higher is worse
+# (cost/risk/effort/time are inverted before weighting). This lives in config
+# (not code) so the weighting scheme is editable data, not a redeploy.
+DECISION_DIMENSIONS = {
+    "impact":     "+",
+    "confidence": "+",
+    "alignment":  "+",
+    "cost":       "-",
+    "risk":       "-",
+    "effort":     "-",
+    "time":       "-",
+}
+
+# Weight presets per decision type. Weights need not sum to 1; they are
+# normalized at compute time. Editable freely.
+WEIGHT_PRESETS = {
+    "default": {"impact": 3, "confidence": 2, "alignment": 2,
+                "cost": 2, "risk": 2, "effort": 1, "time": 1},
+    "channel-choice": {"impact": 3, "confidence": 1, "alignment": 1,
+                       "cost": 3, "risk": 2, "effort": 1, "time": 3},
+    "feature-build": {"impact": 3, "confidence": 2, "alignment": 3,
+                      "cost": 1, "risk": 2, "effort": 3, "time": 1},
+    "pricing": {"impact": 3, "confidence": 2, "alignment": 3,
+                "cost": 1, "risk": 3, "effort": 1, "time": 1},
+}
+
+# Sensitivity: perturb the winner's scores by this fraction; if the ranking
+# flips, flag the decision "fragile" and name the responsible dimension.
+SENSITIVITY_DELTA = 0.20
+
 # Relevance routing thresholds (keyword-overlap based; deterministic).
 RELEVANCE_MIN_KEYWORDS = 1     # >=1 keyword hit => at least 'log'
 RELEVANCE_FLAG_KEYWORDS = 2    # >=2 keyword hits => 'flag-for-review'

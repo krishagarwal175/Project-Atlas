@@ -56,6 +56,24 @@ def _ingest(args):
     run(write="--dry-run" not in args)
 
 
+def _demo_decision():
+    from decision_engine import Alternative, evaluate
+    alts = [
+        Alternative("Tier-2 colleges first", "acute credibility gap, low competition",
+                    {"impact": 8, "confidence": 5, "alignment": 8, "cost": 4, "risk": 5, "effort": 5, "time": 4}),
+        Alternative("Tier-1 colleges first", "prestige, crowded, weaker pull",
+                    {"impact": 6, "confidence": 6, "alignment": 5, "cost": 6, "risk": 6, "effort": 6, "time": 6}),
+    ]
+    res = evaluate("Which college tier should we target as the beachhead?", alts, "channel-choice")
+    print(f"Winner: {res.winner}  |  fragile={res.is_fragile} {res.fragile_reason}")
+    for s in res.scored:
+        flag = " ⚠DNA" if s.dna_conflict else ""
+        print(f"  #{s.rank} {s.name}{flag}: {s.weighted_total}")
+    if res.dna_flags:
+        print("DNA flags:", res.dna_flags)
+    print("(run the API POST /decide with write_note=true to emit a decision note)")
+
+
 def _stats():
     from vault import load_vault, build_backlinks
     from governance import audit
@@ -94,6 +112,8 @@ def main():
         _ingest(rest)
     elif cmd == "stats":
         _stats()
+    elif cmd == "decide":
+        _demo_decision()
     elif cmd == "serve":
         _serve()
     else:

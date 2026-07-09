@@ -12,10 +12,12 @@ from functools import lru_cache
 
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
 import config
 import governance
 import market_intel
+import decision_engine
 from search import SearchEngine
 from vault import load_vault, build_backlinks
 
@@ -100,6 +102,49 @@ def audit(write: bool = Query(False, description="also write the audit note to t
         sev[f.severity] = sev.get(f.severity, 0) + 1
     return {"date": date.today().isoformat(), "summary": sev,
             "findings": [f.__dict__ for f in findings]}
+
+
+class AltIn(BaseModel):
+    name: str
+    description: str = ""
+    scores: dict[str, float] = Field(default_factory=dict)
+    dna_conflict: str = ""
+
+
+class DecideIn(BaseModel):
+    question: str
+    alternatives: list[AltIn]
+    decision_type: str = "default"
+    question_link: str = ""
+    write_note: bool = False
+
+
+@app.get("/decision/presets")
+def decision_presets():
+    return {"dimensions": config.DECISION_DIMENSIONS,
+            "weight_presets": config.WEIGHT_PRESETS,
+            "sensitivity_delta": config.SENSITIVITY_DELTA}
+
+
+@app.post("/decide")
+def decide(body: DecideIn):
+    alts = [decision_engine.Alternative(a.name, a.description, a.scores, a.dna_conflict)
+            for a in body.alternatives]
+    res = decision_engine.evaluate(body.question, alts, body.decision_type)
+    payload = {
+        "question": res.question, "decision_type": res.decision_type,
+        "winner": res.winner, "is_fragile": res.is_fragile,
+        "fragile_reason": res.fragile_reason, "dna_flags": res.dna_flags,
+        "weights": res.weights,
+        "ranked": [{"rank": s.rank, "name": s.name, "total": s.weighted_total,
+                    "contributions": s.contributions, "dna_conflict": s.dna_conflict}
+                   for s in res.scored],
+    }
+    if body.write_note:
+        path, dec_id = decision_engine.create_decision_note(res, body.question_link)
+        _reset_cache()
+        payload["note"] = {"id": dec_id, "path": str(path)}
+    return payload
 
 
 @app.post("/ingest")

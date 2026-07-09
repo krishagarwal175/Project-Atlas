@@ -18,10 +18,13 @@ Folder tree, templates, governance, taxonomy, Strategic-DNA stubs, worked seed l
 - Market Intel ingestion (stdlib RSS, no deps) → `700-Market-Signals/` with relevance-routing vs [[Company-Profile]] keywords; degrades gracefully on dead feeds.
 - Still fully usable by hand if the service is off. See `backend/README.md`.
 
-## Phase 2 — Decision Engine + Experiment loop
-- WSM scoring ([[F-MCDA-weighted-sum]]) that **renders evidence links** and outputs a decision *note*, reasoning-trace-first.
-- Decision Quality rubric + forced retrospective (Quality ≠ Outcome).
-- Strategic DNA guardrail as a pre-filter.
+## ✅ Phase 2 — Decision Engine (DONE 2026-07-09) — `backend/decision_engine.py`
+- WSM scoring ([[F-MCDA-weighted-sum]]) with direction-aware normalization + editable weight presets; **renders the full arithmetic** and outputs a decision *note*, reasoning-trace-first.
+- Decision Quality rubric + empty outcome baked into every generated note (Quality ≠ Outcome).
+- **Strategic DNA guardrail**: a Non-Negotiable-violating alternative cannot be ranked #1.
+- Deterministic **sensitivity/fragility** flag naming the responsible dimension.
+- `POST /decide`, `GET /decision/presets`, `cli.py decide`.
+- *Remaining for the experiment loop:* forced-retrospective enforcement is modelled in the template + governance; wiring a generated decision straight into its Question ledger is a follow-up.
 
 ## Phase 3 — Graph Analytics + Understanding/Contradiction/Confidence
 - NetworkX over parsed wikilinks (centrality, pathfinding, clusters) in a thin web dashboard.
