@@ -16,6 +16,11 @@ env/
 .obsidian/
 vault/.trash/
 
+# PyInstaller desktop build output (rebuildable — never commit the binary)
+dist/
+build/
+*.spec
+
 # OS
 .DS_Store
 Thumbs.db

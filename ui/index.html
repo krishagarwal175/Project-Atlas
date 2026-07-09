@@ -3,41 +3,60 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Acredemia Research OS</title>
+<title>ATLAS — Decision OS</title>
 <style>
   :root{
-    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
-    --tx:#e6e9ef; --mut:#9aa4b2; --acc:#5b9dff; --good:#37b26a; --warn:#e0a132; --bad:#e05a5a;
-    --rad:10px;
-  }
-  @media (prefers-color-scheme:light){
-    :root{--bg:#f6f7f9;--panel:#fff;--panel2:#f0f2f5;--line:#e2e6ec;--tx:#1a1d23;--mut:#5c6570;}
+    /* charcoal/black base · red primary · neon-green + neon-red hints */
+    --bg:#0b0c0e; --panel:#141519; --panel2:#1b1d22; --line:rgba(255,255,255,.08);
+    --tx:#ededf0; --mut:#8b8e96;
+    --acc:#ff443a;            /* RED — primary/brand */
+    --acc-dim:#3a1416;        /* red tint surface */
+    --good:#46ffa0;           /* neon green */
+    --warn:#ff7a3d;           /* muted red-orange */
+    --bad:#ff2d55;            /* neon red */
+    --mono:'JetBrains Mono',ui-monospace,'SF Mono',Consolas,monospace;
+    --rad:9px;
   }
   *{box-sizing:border-box}
-  body{margin:0;font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--tx)}
-  header{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;position:sticky;top:0;background:var(--bg);z-index:5}
-  header h1{font-size:17px;margin:0;font-weight:650}
-  header .sub{color:var(--mut);font-size:12px}
-  .dot{width:9px;height:9px;border-radius:50%;background:var(--bad);display:inline-block}
-  .dot.ok{background:var(--good)}
-  main{max-width:1180px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:16px}
+  ::selection{background:var(--acc);color:#0b0c0e}
+  body{margin:0;font:14px/1.55 -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--tx);
+    background:
+      radial-gradient(900px 500px at 88% -8%, rgba(255,68,58,.10), transparent 60%),
+      radial-gradient(700px 480px at -6% 108%, rgba(70,255,160,.05), transparent 62%),
+      var(--bg);
+    background-attachment:fixed;min-height:100vh}
+  header{padding:15px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:5;
+    background:linear-gradient(180deg,rgba(11,12,14,.92),rgba(11,12,14,.72));backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(255,68,58,.14)}
+  header::before{content:"";width:3px;height:20px;background:var(--acc);box-shadow:0 0 12px rgba(255,68,58,.7);border-radius:2px}
+  header h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  header h1 b{color:var(--acc)}
+  header .sub{color:var(--mut);font-size:11px;font-family:var(--mono)}
+  header .k{font-family:var(--mono);font-size:10px;letter-spacing:.05em}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--bad);display:inline-block;box-shadow:0 0 10px var(--bad)}
+  .dot.ok{background:var(--good);box-shadow:0 0 10px var(--good)}
+  main{max-width:1200px;margin:0 auto;padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:18px;transition:border-color .25s,box-shadow .25s}
+  .card:hover{border-color:rgba(255,68,58,.28);box-shadow:0 0 0 1px rgba(255,68,58,.06),0 10px 30px rgba(0,0,0,.35)}
   .card.wide{grid-column:1/-1}
-  .card h2{margin:0 0 12px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+  .card h2{margin:0 0 14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-family:var(--mono);display:flex;align-items:center;gap:8px}
+  .card h2::before{content:"";width:6px;height:6px;background:var(--acc);border-radius:1px;box-shadow:0 0 8px rgba(255,68,58,.7)}
   .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  input,select,button,textarea{font:inherit;color:var(--tx);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
-  input:focus,textarea:focus{outline:1px solid var(--acc)}
-  button{cursor:pointer;background:var(--acc);color:#fff;border:none;font-weight:600}
+  input,select,button,textarea{font:inherit;color:var(--tx);background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:9px 11px}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(255,68,58,.16)}
+  button{cursor:pointer;background:var(--acc);color:#150406;border:none;font-weight:700;letter-spacing:.02em;transition:.2s}
+  button:hover{background:#ff5b52;box-shadow:0 0 18px rgba(255,68,58,.35)}
   button.sec{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}
-  button:hover{filter:brightness(1.08)}
+  button.sec:hover{background:#23252b;border-color:rgba(255,68,58,.4);box-shadow:none}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .stat{background:var(--panel2);border-radius:8px;padding:12px;text-align:center}
-  .stat b{font-size:22px;display:block}
-  .stat span{color:var(--mut);font-size:11px}
-  .pill{font-size:11px;padding:2px 7px;border-radius:20px;border:1px solid var(--line);color:var(--mut)}
-  .pill.good{color:var(--good);border-color:var(--good)}
-  .pill.warn{color:var(--warn);border-color:var(--warn)}
-  .pill.bad{color:var(--bad);border-color:var(--bad)}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:14px;text-align:center;position:relative;overflow:hidden}
+  .stat::after{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,var(--acc),transparent);opacity:.5}
+  .stat b{font-size:24px;display:block;font-weight:800;letter-spacing:-.01em}
+  .stat span{color:var(--mut);font-size:10px;font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase}
+  .pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--mut);font-family:var(--mono);letter-spacing:.03em}
+  .pill.good{color:var(--good);border-color:rgba(70,255,160,.4);background:rgba(70,255,160,.07)}
+  .pill.warn{color:var(--warn);border-color:rgba(255,122,61,.4);background:rgba(255,122,61,.07)}
+  .pill.bad{color:var(--bad);border-color:rgba(255,45,85,.45);background:rgba(255,45,85,.08)}
   ul{list-style:none;margin:0;padding:0}
   li{padding:8px 0;border-bottom:1px solid var(--line)}
   li:last-child{border:0}
@@ -46,11 +65,12 @@
   table{width:100%;border-collapse:collapse;font-size:13px}
   th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
   th{color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase}
-  .win{color:var(--good);font-weight:700}
+  .win{color:var(--good);font-weight:800}
   .small{font-size:12px}
-  .tag{font-size:11px;color:var(--mut)}
-  code{background:var(--panel2);padding:1px 5px;border-radius:5px;font-size:12px}
+  .tag{font-size:11px;color:var(--mut);font-family:var(--mono)}
+  code{background:var(--acc-dim);color:#ff9a92;padding:1px 6px;border-radius:5px;font-size:12px;font-family:var(--mono)}
   a{color:var(--acc);text-decoration:none}
+  .acc{color:var(--acc)}
   .flex{display:flex;gap:16px;flex-wrap:wrap}
   .scores{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
   .scores label{font-size:10px;color:var(--mut);text-align:center}
@@ -60,7 +80,7 @@
 <body>
 <header>
   <span class="dot" id="conn"></span>
-  <h1>Acredemia Research OS</h1>
+  <h1>ATLAS<b>.</b><span style="color:var(--mut);font-weight:500;letter-spacing:.1em"> DECISION-OS</span></h1>
   <span class="sub" id="hdr">connecting…</span>
   <span style="flex:1"></span>
   <span class="k">API</span>
@@ -133,7 +153,11 @@
 
 <script>
 const $=id=>document.getElementById(id);
-const api=()=>$('api').value.replace(/\/$/,'');
+// When the dashboard is SERVED by Atlas (desktop .exe or `python cli.py serve`),
+// talk to the same origin whatever the port. When opened as a file://, fall back
+// to the value in the API box.
+if(location.protocol.startsWith('http')){document.addEventListener('DOMContentLoaded',()=>{$('api').value=location.origin;});}
+const api=()=>{const v=$('api').value.trim();return (v||location.origin).replace(/\/$/,'');};
 const DIMS=['impact','confidence','alignment','cost','risk','effort','time'];
 const badgeFor=(s)=>({speculative:'',emerging:'',supported:'good','well-tested':'good',institutional:'good'}[s]||'');
 

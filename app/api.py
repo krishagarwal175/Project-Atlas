@@ -7,11 +7,13 @@ surface. Auto-generated OpenAPI docs at /docs double as the internal API referen
 Run:  uvicorn api:app --reload   (from the app/ folder)  — or:  python cli.py serve
 """
 from __future__ import annotations
+import sys
 from datetime import date
 from functools import lru_cache
+from pathlib import Path
 
 from fastapi import FastAPI, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -40,6 +42,22 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
 )
+
+
+# --- serve the local dashboard so a single process is self-contained -------
+def _ui_dir() -> Path:
+    """Locate ui/ in dev and inside a PyInstaller bundle (desktop .exe)."""
+    if getattr(sys, "frozen", False):
+        return Path(sys._MEIPASS) / "ui"          # type: ignore[attr-defined]
+    return Path(__file__).resolve().parent.parent / "ui"
+
+
+@app.get("/", include_in_schema=False)
+def dashboard():
+    idx = _ui_dir() / "index.html"
+    if idx.exists():
+        return FileResponse(str(idx))
+    return {"atlas": "ok", "ui": "not bundled — open ui/index.html manually"}
 
 
 @lru_cache(maxsize=1)

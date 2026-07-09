@@ -1,0 +1,5 @@
+# Desktop packaging deps (in addition to app/requirements.txt).
+# Local-first: pywebview uses the OS's built-in webview (Edge WebView2 on Windows) —
+# no bundled browser, no Node, no Electron.
+pywebview>=5.0
+pyinstaller>=6.0
