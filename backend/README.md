@@ -42,6 +42,15 @@ python cli.py serve                  # start API on :8000 (docs at /docs)
 | `api.py` | REST surface | FastAPI; `/search /audit /ingest /notes /note/{id} /health` |
 | `config.py` | — | vault path, RSS feeds, half-lives, confidence ladder |
 
+## Tests
+```bash
+python -m pytest            # 35 tests, ~3s, no network
+```
+Deterministic engines are covered with self-contained fixture vaults (stable as the
+real vault grows): parser, decision engine (WSM/DNA/sensitivity), epistemics
+confidence rules, governance checks, market-intel parsing/routing, synthesis
+clustering, graph pathfinding, and safe writes — plus smoke tests on the real vault.
+
 ## Design guarantees
 - **Vault authoritative, cache disposable.** Delete anything here; re-run to rebuild. Nothing important lives only in code.
 - **Determinism where credibility lives.** Governance, relevance routing, and confidence checks are deterministic and explainable. No opaque model decides anything that matters.

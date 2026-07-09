@@ -4,10 +4,12 @@ backend/__pycache__/
 **/__pycache__/
 *.pyc
 
-# Python envs
+# Python envs / test cache
 .venv/
 venv/
 env/
+.pytest_cache/
+**/.pytest_cache/
 
 # Obsidian workspace UI state (keep vault content, drop per-session churn)
 **/.obsidian/workspace*.json

@@ -6,7 +6,13 @@ uvicorn[standard]>=0.29
 # Market intelligence ingestion (free, public RSS)
 feedparser>=6.0
 
-# Optional — semantic search. If absent, search falls back to keyword/TF-IDF.
+# Analytics engines (search fallback, clustering, graph)
+scikit-learn>=1.3     # TF-IDF search + synthesis clustering
+numpy>=1.24
+networkx>=3.0         # graph analytics
+
+# Tests
+pytest>=8.0
+
+# Optional — semantic search upgrade. If absent, search uses TF-IDF above.
 # sentence-transformers>=2.6   # local embeddings (all-MiniLM-L6-v2, ~80MB, CPU)
-# scikit-learn>=1.3            # TF-IDF fallback if embeddings not installed
-# numpy>=1.24

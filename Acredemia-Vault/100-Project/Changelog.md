@@ -8,6 +8,13 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — Test suite (durability)
+- **What:** 35 pytest tests in `backend/tests/` covering every deterministic engine — parser (frontmatter/wikilinks/ledger/template-forcing), Decision Engine (WSM ranking, cost inversion, DNA demotion, sensitivity), Epistemics (the confidence-derivation rules incl. "no promotion without a survived contradiction search", decay cap, drift), Governance (weak-pattern, broken-link, untriaged-signal, clean-note), Market Intel (RSS+Atom parsing, relevance routing), Synthesis (clustering separation, ≥2-case rule), Graph (pathfinding), and safe vault writes — plus smoke tests on the real vault. All green in ~3s, no network.
+- **Why:** This system is meant to be maintained for years by one person; tests lock in the behavior of the reasoning engines so refactors can't silently break the epistemics/decision logic the whole product's credibility rests on.
+- **Tradeoffs:** tests build their own fixture vaults (independent of real content) so they stay stable as the vault grows; a few smoke tests assert on the real vault for gross-regression coverage.
+- **Impacted modules:** all deterministic engines now have a safety net.
+- **Follow-ups:** [ ] CI (GitHub Actions) to run pytest on push — a natural Phase-4 addition.
+
 ## 2026-07-09 — Understanding / Synthesis engine (Module 5→9)
 - **What:** `backend/synthesis.py` — clusters case studies (agglomerative, cosine, move+tag-weighted with generic-growth-word stopwording to avoid spurious "*-driven-growth" links) and drafts **candidate patterns** ("across these cases, X recurs"), deduped against existing patterns (NEW vs covered). Optional local-Ollama prose, deterministic fallback. Human promotes a candidate → draft pattern note (`status: candidate`); never auto-promoted. Endpoints `/synthesize`, `/synthesize/promote`; `cli.py synthesize`; dashboard **Synthesis panel** with promote buttons.
 - **Loop demonstrated end to end:** added a real 2nd marketplace case ([[Groupon-discount-growth]]); synthesis surfaced a **NEW {Groupon, Homejoy}** candidate; accepted it by strengthening [[P-marketplace-leakage-kills-unit-economics]] to 2 cases → the Governance Bot's weak-pattern finding cleared → re-synthesis now marks the cluster **covered** (dedup working). Synthesis proposed → human accepted → governance cleared.
