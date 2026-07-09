@@ -8,6 +8,13 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — 🧊 Atlas 1.0 Architecture Freeze (RC-1 audit)
+- **What:** Full RC-1 release audit → [[ADR-002-atlas-1.0-architecture-freeze]], the permanent foundational document (module responsibilities, clean-DAG dependency map, entity model, knowledge-flow verification, technical-debt ranking, release checklist, 10 architectural invariants, and the four philosophies). Architecture formally frozen at 1.0.
+- **Consistency fixes bound during the freeze (not new features):** made the per-note `half-life-days` field live (`governance._half_life` honors it); implemented the documented-but-missing `broken-strategic-link` check (decision citing a contested theory) and reclassified "ADR inconsistencies" as manual review; split the tag taxonomy into Active vs Reserved types; declared the SQLite cache deferred (YAGNI) and marked `config.CACHE_DB` reserved; added `.gitattributes` to stop CRLF churn. Tests: 35→37, all green.
+- **Verdict:** Atlas 1.0 is internally complete and release-ready; no critical blockers. Important items (API-layer tests, CI, founder-authored DNA) gate *external* release only.
+- **Why:** Shift from building to preserving — optimize Atlas to survive ten years of evolution without losing coherence.
+- **Follow-ups:** [ ] D1 API-layer tests · [ ] D2 CI (GitHub Actions) · [ ] founder fills Strategic-DNA.
+
 ## 2026-07-09 — Test suite (durability)
 - **What:** 35 pytest tests in `backend/tests/` covering every deterministic engine — parser (frontmatter/wikilinks/ledger/template-forcing), Decision Engine (WSM ranking, cost inversion, DNA demotion, sensitivity), Epistemics (the confidence-derivation rules incl. "no promotion without a survived contradiction search", decay cap, drift), Governance (weak-pattern, broken-link, untriaged-signal, clean-note), Market Intel (RSS+Atom parsing, relevance routing), Synthesis (clustering separation, ≥2-case rule), Graph (pathfinding), and safe vault writes — plus smoke tests on the real vault. All green in ~3s, no network.
 - **Why:** This system is meant to be maintained for years by one person; tests lock in the behavior of the reasoning engines so refactors can't silently break the epistemics/decision logic the whole product's credibility rests on.

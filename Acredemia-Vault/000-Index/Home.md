@@ -23,6 +23,9 @@ updated: 2026-07-09
 ## The core loop
 `Question → Evidence → Understanding → Theory (survives contradiction) → Decision (quality-scored) → Experiment → Outcome → back into Evidence`
 
+## 🧊 Architecture is frozen at 1.0
+Read [[ADR-002-atlas-1.0-architecture-freeze]] before proposing any architectural change. Features are added only to solve problems found through real usage.
+
 ## What this vault is
 The **source of truth**. Plain markdown you own. Every backend service reads and writes these files; nothing important lives only in a database. If every tool we build dies, this vault still works by hand.
 

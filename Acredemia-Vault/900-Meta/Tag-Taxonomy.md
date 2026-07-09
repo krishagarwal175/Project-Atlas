@@ -9,7 +9,11 @@ updated: 2026-07-09
 Tag sprawl is the #1 way vaults die. `type:` frontmatter is **authoritative**; tags are secondary and **faceted** (always `facet/value`).
 
 ## `type:` (authoritative — one per note)
-`moc · governance · question · decision · decision-review · experiment · case-study · pattern · theory · contradiction · observation · hypothesis · assumption · strategic-principle · lesson · framework · competitor · market-signal · market-report · meeting-note · postmortem · adr · dna · project · confidence-review · knowledge-review · template`
+**Active (have templates + instances):** `moc · governance · question · decision · experiment · case-study · pattern · theory · contradiction · observation · assumption · lesson · framework · market-signal · adr · dna · project · knowledge-review · template · placeholder`
+
+**Reserved (defined, no template/instance yet — add a template before first use):** `decision-review · confidence-review · hypothesis · strategic-principle · competitor · market-report · meeting-note · postmortem`
+
+> `placeholder` = a `.folder-note.md` marking a reserved empty folder; ignored by the parser and governance.
 
 ## Faceted tags
 - `domain/*` → `gtm · pricing · product · hiring · fundraising · marketing · community · verification · marketplace · partnerships`

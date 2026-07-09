@@ -15,7 +15,10 @@ VAULT_PATH = Path(
     )
 )
 
-# Disposable cache DB. Safe to delete; rebuilt from the vault.
+# RESERVED (not yet built): a disposable SQLite index over the vault. Deferred by
+# design — parsing the whole vault live is sub-second at current scale (YAGNI).
+# Build this only when parse latency becomes a real, measured problem. See the
+# Architecture Freeze (ADR-002) "deferred, on purpose" note.
 CACHE_DB = Path(__file__).resolve().parent / "cache.sqlite"
 
 # Folders/files ignored by the parser.

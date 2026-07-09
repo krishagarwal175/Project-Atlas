@@ -38,6 +38,26 @@ def test_templates_and_readme_not_audited(make_vault):
     assert "broken-link" not in _cats(audit(notes))
 
 
+def test_broken_strategic_link_to_contested_theory(make_vault):
+    notes = make_vault({
+        "600-Decisions/d.md": note_md("decision", "D", "cites [[t]]", **{"tags": "[domain/gtm]"}),
+        "400-Knowledge/Theories/t.md": note_md("theory", "T", "claim", **{"contested": "true", "tags": "[domain/gtm]"}),
+    })
+    assert "broken-strategic-link" in _cats(audit(notes))
+
+
+def test_per_note_half_life_override_makes_field_live(make_vault):
+    # a 1-day half-life + old review date must trigger a freshness finding,
+    # proving the per-note half-life-days field is honored (not dead)
+    notes = make_vault({
+        "400-Knowledge/Case-Studies/c.md": note_md(
+            "case-study", "C", "body",
+            **{"tags": "[domain/gtm]", "half-life-days": "1", "last-reviewed": "2020-01-01"}),
+    })
+    cats = _cats(audit(notes))
+    assert "stale-knowledge" in cats or "needs-review" in cats
+
+
 def test_clean_note_no_findings(make_vault):
     notes = make_vault({
         "a.md": note_md("question", "Q", "links [[b]]", **{"tags": "[domain/gtm]", "status": "open", "created": "2026-07-01"}),

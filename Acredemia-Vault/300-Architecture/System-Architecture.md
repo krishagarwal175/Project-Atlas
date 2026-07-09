@@ -36,4 +36,4 @@ CACHE       → SQLite + numpy embedding index. Disposable; regenerated from the
 ## Why not a graph DB (Neo4j)?
 At Acredemia scale the `[[wikilink]]` graph *is* the knowledge graph, maintained by the act of writing. Extract to NetworkX on demand for computation. Neo4j adds a server + query language + sync problem for a scale problem we don't have. Revisit only at Phase-4 enterprise scale.
 
-Related: [[ADR-001-markdown-substrate]] · [[Roadmap]] · [[Vault-Governance]]
+Related: [[ADR-001-markdown-substrate]] · [[ADR-002-atlas-1.0-architecture-freeze]] (the frozen v1 foundation — read before any architectural change) · [[Roadmap]] · [[Vault-Governance]]

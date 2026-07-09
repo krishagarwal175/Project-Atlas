@@ -63,7 +63,12 @@ Each note type has a half-life. Freshness state ∈ `Fresh | Aging | Needs-Revie
 - Unanswered strategic questions open > 30 days with no evidence/experiment
 - Orphaned observations (no link to a Question or Theory)
 - Expired assumptions (assumption freshness lapsed)
-- Broken strategic links (a Decision citing a now-`⚑ contested` Theory)
-- Missing retrospectives · broken wikilinks · untagged notes · ADR inconsistencies
+- Broken strategic links (a Decision citing a now-`⚑ contested` Theory) — **automated** (`broken-strategic-link`)
+- Missing retrospectives · broken wikilinks · untagged notes
+- ADR inconsistencies — **manual review** (not auto-detectable deterministically; check during quarterly review)
+
+## Freshness half-life source of truth
+`config.HALF_LIFE_DAYS` (by note type) is canonical. A per-note `half-life-days`
+frontmatter value **overrides** the type default for that note (honored by the bot).
 
 Until the bot exists, run this checklist by hand weekly and file the note under `Reviews/`.

@@ -22,6 +22,13 @@ class Finding:
 
 
 def _half_life(note: Note) -> int | None:
+    # A per-note `half-life-days` frontmatter value overrides the type default,
+    # so the field is honored rather than dead. Else fall back to config by type.
+    v = note.frontmatter.get("half-life-days")
+    if isinstance(v, int):
+        return v
+    if isinstance(v, str) and v.strip().isdigit():
+        return int(v.strip())
     return config.HALF_LIFE_DAYS.get(note.type, config.DEFAULT_HALF_LIFE)
 
 
@@ -99,6 +106,17 @@ def audit(notes: list[Note], today: date | None = None) -> list[Finding]:
             if not str(n.frontmatter.get("outcome", "")).strip():
                 findings.append(Finding("high", "missing-outcome", n.filename,
                                         "marked concluded but Decision OUTCOME is empty"))
+
+        # 6b. Broken strategic link: a Decision citing a now-contested Theory.
+        if t == "decision":
+            for o in n.outlinks:
+                if o.startswith("__UNRESOLVED__"):
+                    continue
+                tgt = by_key.get(o.lower())
+                if tgt and tgt.type == "theory" and \
+                        str(tgt.frontmatter.get("contested", "")).strip().lower() in ("true", "yes"):
+                    findings.append(Finding("medium", "broken-strategic-link", n.filename,
+                                            f"cites now-contested theory [[{tgt.filename}]] — re-examine the decision"))
 
         # 7. Concluded experiments missing a result
         if t == "experiment" and n.status == "concluded":
