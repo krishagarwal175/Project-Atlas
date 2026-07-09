@@ -1,0 +1,19 @@
+# Backend cache — disposable, rebuilt from the vault (ADR-001)
+backend/cache.sqlite
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+
+# Python envs
+.venv/
+venv/
+env/
+
+# Obsidian workspace (keep the vault content, drop the local UI state)
+Acredemia-Vault/.obsidian/workspace*.json
+Acredemia-Vault/.obsidian/cache
+Acredemia-Vault/.trash/
+
+# OS
+.DS_Store
+Thumbs.db

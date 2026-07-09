@@ -1,0 +1,12 @@
+# Core (required) — pure-Python, no paid APIs
+PyYAML>=6.0
+fastapi>=0.110
+uvicorn[standard]>=0.29
+
+# Market intelligence ingestion (free, public RSS)
+feedparser>=6.0
+
+# Optional — semantic search. If absent, search falls back to keyword/TF-IDF.
+# sentence-transformers>=2.6   # local embeddings (all-MiniLM-L6-v2, ~80MB, CPU)
+# scikit-learn>=1.3            # TF-IDF fallback if embeddings not installed
+# numpy>=1.24

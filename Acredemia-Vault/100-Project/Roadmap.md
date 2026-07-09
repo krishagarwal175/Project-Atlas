@@ -1,0 +1,34 @@
+---
+type: project
+title: Roadmap
+updated: 2026-07-09
+---
+
+# Roadmap
+
+Guiding rule: **every phase is independently useful and shippable.** Nothing built speculatively.
+
+## ✅ Phase 0 — The vault, by hand (DONE 2026-07-09)
+Folder tree, templates, governance, taxonomy, Strategic-DNA stubs, worked seed loop. Usable today in Obsidian. Delivers institutional memory before any code.
+
+## ✅ Phase 1 — Retrieval + Ingestion (DONE 2026-07-09) — `backend/`
+- FastAPI service + CLI parse the vault (markdown+YAML+wikilinks+Evidence Ledger).
+- Search across the whole vault (TF-IDF now; sentence-transformers-ready), confidence+freshness aware.
+- Governance Bot: deterministic health audit → `900-Meta/Reviews/`.
+- Market Intel ingestion (stdlib RSS, no deps) → `700-Market-Signals/` with relevance-routing vs [[Company-Profile]] keywords; degrades gracefully on dead feeds.
+- Still fully usable by hand if the service is off. See `backend/README.md`.
+
+## Phase 2 — Decision Engine + Experiment loop
+- WSM scoring ([[F-MCDA-weighted-sum]]) that **renders evidence links** and outputs a decision *note*, reasoning-trace-first.
+- Decision Quality rubric + forced retrospective (Quality ≠ Outcome).
+- Strategic DNA guardrail as a pre-filter.
+
+## Phase 3 — Graph Analytics + Understanding/Contradiction/Confidence
+- NetworkX over parsed wikilinks (centrality, pathfinding, clusters) in a thin web dashboard.
+- Confidence & Contradiction Engine over the Evidence Ledger (derived states, auto-opened contradiction tasks).
+- Freshness/Decay service. Ollama-assisted Theory drafting (optional, human-approved).
+
+## Phase 4 — Enterprise extensibility
+- Multi-vault/tenant, roles, hosted tier. "Your knowledge is portable markdown you own" becomes the sales pitch.
+
+See [[Milestones]] · [[Backlog]].
