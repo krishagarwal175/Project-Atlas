@@ -20,9 +20,14 @@ pip install -r requirements.txt
 
 ## Run
 ```bash
-python cli.py serve     # local API @ http://127.0.0.1:8000  (docs at /docs)
+# Windowed desktop app (boots via the lifecycle kernel, opens a native window):
+python desktop/atlas.py
+
+# —or, engine only—
+cd app && python cli.py serve     # local API @ http://127.0.0.1:8000  (docs at /docs)
 ```
-Open `ui/index.html` in a browser, or serve it: `cd ../ui && python -m http.server 5173`.
+For engine-only mode, open `ui/index.html` or serve it: `cd ui && python -m http.server 5173`.
+Boot diagnostics are logged to `logs/atlas-<date>.log`. Architecture: `docs/DESKTOP-ARCHITECTURE.md`.
 
 ## Everyday commands (all offline)
 ```bash

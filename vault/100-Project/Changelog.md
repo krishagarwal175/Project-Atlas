@@ -8,6 +8,13 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-09 — 🎨🖥 Design system + Desktop-first architecture ([[ADR-004-desktop-architecture]])
+- **Design system ("Command Surface"):** `docs/DESIGN-SYSTEM.md` (color/type/spacing/motion tokens, component primitives, interaction + a11y rules, iconography, grids, workspace philosophy) + `ui/tokens.css` (canonical tokens + primitives, offline-first). Dashboard now consumes the system (no raw values in-screen). Charcoal base · red primary · neon-green/neon-red signal colors.
+- **Desktop-first architecture:** added a **lifecycle kernel** (`app/lifecycle.py` — ordered boot, per-step logging, health checks, graceful shutdown) and a **path authority** (`app/paths.py` — application vs user-data separation, portable/installed modes, env overrides, no hardcoded paths). `config.py` sources locations from paths; `desktop/atlas.py` boots via the kernel and shuts down gracefully; structured logging to `logs/`.
+- **Deliberate non-change:** did **not** fragment the 13 frozen engine modules into a 14-folder tree — layers are a dependency rule + mental model, not a directory explosion (would violate I10 / "no unnecessary abstraction"). Rationale in [[ADR-004-desktop-architecture]].
+- **New invariants I17–I21:** app/user-data separation, single path authority, deterministic recoverable lifecycle, framework-agnostic desktop shell, layered dependency direction.
+- **Verified:** 43 tests green; kernel boots READY in ~3s with health all-green; graceful shutdown confirmed. `cache/logs/config` git-ignored (user data).
+
 ## 2026-07-09 — 🖥 Local-First pivot + repository migration ([[ADR-003-local-first-single-user]])
 - **What:** Deliberate product-level decision — Atlas is a **Local-First, single-user** Strategic OS, not a SaaS. Removed all cloud/SaaS assumptions from v1 (landing page archived; no waitlist/signups/auth/hosting). Added 6 invariants (I11–I16: Local-First, Offline-First, User-Ownership, Zero-Lock-in, Deterministic-Core/Optional-AI, Desktop-packaging-friendly). Cloud/multi-user pushed to Phase 5 "possible future."
 - **Repository migration:** `backend/ → app/`, `frontend/ → ui/`, `Acredemia-Vault/ → vault/`, `landing/ → archive/marketing/landing-page/` (kept, marked future-only). New root `README.md` + `docs/` (DEVELOPMENT, ARCHITECTURE). Config vault path → `vault/`; env var `ACREDEMIA_VAULT → ATLAS_VAULT`; launch/gitignore updated; landing removed from dev workflow.
