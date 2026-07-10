@@ -175,7 +175,7 @@
           <div class="r" id="gstat">NODES —<br>EDGES —</div>
         </div>
         <div id="gwrap">
-          <div class="gmeta">~/GRAPH/RENDER · drag-free force layout · click a node to inspect</div>
+          <div class="gmeta">~/GRAPH · scroll ZOOM · drag PAN · drag node MOVE · click INSPECT <span onclick="resetZoom()" style="cursor:pointer;color:var(--acc);margin-left:8px">[RESET]</span></div>
           <svg id="gsvg" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet"></svg>
           <div class="legend">
             <span><i style="background:#ff443a"></i>THEORY</span>
@@ -328,33 +328,50 @@ async function doDecide(){const body={question:$('dq').value,decision_type:$('dt
     <div id="decmsg" class="muted small mono" style="margin-top:6px">The number is disposable — the reasoning trace, DNA check, and evidence are the asset.</div>`;}
 async function saveDecision(){const body={question:$('dq').value,decision_type:$('dtype').value,write_note:true,alternatives:ALTS.map(a=>({name:a.name,scores:a.s,dna_conflict:a.dna}))};const d=await j('/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});$('decmsg').innerHTML=d.note?`✅ Saved <code>${d.note.id}</code> → 600-Decisions/`:'save failed';window._gdrawn=0;loadBrief();}
 
-/* ---- knowledge graph (force layout, SVG) ---- */
+/* ---- knowledge graph (force layout + zoom / pan / node-drag) ---- */
+let G={nodes:[],edges:[],idx:{},adj:{},z:{s:1,tx:0,ty:0},moved:false,drag:null};
+const GW=1000,GH=640;
 async function renderGraph(){
   let d; try{d=await j('/graph/data?max_nodes=110');}catch(e){return;}
   $('gstat').innerHTML='NODES '+d.nodes.length+'<br>EDGES '+d.edges.length;
-  const W=1000,H=640,svg=$('gsvg'),idx={};
-  d.nodes.forEach((n,i)=>{idx[n.id]=n;n.x=W/2+Math.cos(i)*260*Math.random()+ (Math.random()*80-40);n.y=H/2+Math.sin(i)*220*Math.random()+(Math.random()*80-40);n.vx=0;n.vy=0;});
-  const E=d.edges.filter(e=>idx[e.s]&&idx[e.t]);
-  // force sim
-  for(let it=0;it<320;it++){
-    const k=it<120?1:0.6;
-    for(let i=0;i<d.nodes.length;i++){const a=d.nodes[i];for(let jx=i+1;jx<d.nodes.length;jx++){const b=d.nodes[jx];
-      let dx=a.x-b.x,dy=a.y-b.y,ds=dx*dx+dy*dy||0.01,f=1400/ds;a.vx+=dx*f*0.001;a.vy+=dy*f*0.001;b.vx-=dx*f*0.001;b.vy-=dy*f*0.001;}}
-    E.forEach(e=>{const a=idx[e.s],b=idx[e.t];let dx=b.x-a.x,dy=b.y-a.y,dist=Math.sqrt(dx*dx+dy*dy)||1,f=(dist-90)*0.02;a.vx+=dx/dist*f;a.vy+=dy/dist*f;b.vx-=dx/dist*f;b.vy-=dy/dist*f;});
-    d.nodes.forEach(n=>{n.vx+=(W/2-n.x)*0.002;n.vy+=(H/2-n.y)*0.002;n.x+=n.vx*k;n.y+=n.vy*k;n.vx*=0.82;n.vy*=0.82;n.x=Math.max(20,Math.min(W-20,n.x));n.y=Math.max(20,Math.min(H-20,n.y));});
+  G.idx={};
+  d.nodes.forEach(n=>{n.x=GW/2+(Math.random()*2-1)*300;n.y=GH/2+(Math.random()*2-1)*240;n.vx=0;n.vy=0;G.idx[n.id]=n;});
+  G.edges=d.edges.filter(e=>G.idx[e.s]&&G.idx[e.t]); G.nodes=d.nodes;
+  for(let it=0;it<340;it++){const k=it<130?1:0.55;
+    for(let i=0;i<G.nodes.length;i++){const a=G.nodes[i];for(let jx=i+1;jx<G.nodes.length;jx++){const b=G.nodes[jx];
+      let dx=a.x-b.x,dy=a.y-b.y,ds=dx*dx+dy*dy||0.01,f=1700/ds;a.vx+=dx*f*0.001;a.vy+=dy*f*0.001;b.vx-=dx*f*0.001;b.vy-=dy*f*0.001;}}
+    G.edges.forEach(e=>{const a=G.idx[e.s],b=G.idx[e.t];let dx=b.x-a.x,dy=b.y-a.y,dist=Math.sqrt(dx*dx+dy*dy)||1,f=(dist-95)*0.02;a.vx+=dx/dist*f;a.vy+=dy/dist*f;b.vx-=dx/dist*f;b.vy-=dy/dist*f;});
+    G.nodes.forEach(n=>{n.vx+=(GW/2-n.x)*0.002;n.vy+=(GH/2-n.y)*0.002;n.x+=n.vx*k;n.y+=n.vy*k;n.vx*=0.82;n.vy*=0.82;n.x=Math.max(20,Math.min(GW-20,n.x));n.y=Math.max(20,Math.min(GH-20,n.y));});
   }
-  const adj={};d.nodes.forEach(n=>adj[n.id]=new Set());E.forEach(e=>{adj[e.s].add(e.t);adj[e.t].add(e.s);});
-  let svgs='';
-  E.forEach(e=>{const a=idx[e.s],b=idx[e.t];svgs+=`<line class="edge" data-s="${e.s}" data-t="${e.t}" x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}"/>`;});
-  d.nodes.forEach(n=>{const r=Math.min(4+n.degree*1.4,14),c=NCOL[n.type]||'#5a5d64';
-    const lbl=n.degree>=3?`<text x="${(n.x+r+3).toFixed(1)}" y="${(n.y+3).toFixed(1)}">${n.id.slice(0,20)}</text>`:'';
-    svgs+=`<g class="node" data-id="${n.id}" onmouseover="hoverNode('${n.id}')" onmouseout="unhover()" onclick="inspectNode('${n.id}')">
-      <circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${r}" fill="${c}" style="filter:drop-shadow(0 0 5px ${c}66)"/>${lbl}</g>`;});
-  svg.innerHTML=svgs; window._adj=adj;
+  G.adj={}; G.nodes.forEach(n=>G.adj[n.id]=new Set()); G.edges.forEach(e=>{G.adj[e.s].add(e.t);G.adj[e.t].add(e.s);});
+  G.z={s:1,tx:0,ty:0}; drawGraph(); gWire();
 }
-function hoverNode(id){const near=window._adj[id]||new Set();
+function drawGraph(){
+  let s='<g id="gvp">';
+  G.edges.forEach(e=>{const a=G.idx[e.s],b=G.idx[e.t];s+=`<line class="edge" data-s="${e.s}" data-t="${e.t}" x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}"/>`;});
+  G.nodes.forEach(n=>{const r=Math.min(4+n.degree*1.4,14),c=NCOL[n.type]||'#5a5d64';
+    const lbl=n.degree>=3?`<text x="${(n.x+r+3).toFixed(1)}" y="${(n.y+3).toFixed(1)}">${n.id.slice(0,20)}</text>`:'';
+    s+=`<g class="node" data-id="${n.id}" onmouseover="hoverNode('${n.id}')" onmouseout="unhover()" onclick="nodeClick('${n.id}')"><circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${r}" fill="${c}" style="filter:drop-shadow(0 0 5px ${c}66)"/>${lbl}</g>`;});
+  s+='</g>'; $('gsvg').innerHTML=s; applyZoom();
+}
+function applyZoom(){const g=document.getElementById('gvp'); if(g)g.setAttribute('transform',`translate(${G.z.tx.toFixed(2)} ${G.z.ty.toFixed(2)}) scale(${G.z.s.toFixed(3)})`);}
+function resetZoom(){G.z={s:1,tx:0,ty:0};applyZoom();}
+function nodeClick(id){ if(!G.moved) inspectNode(id); }
+function _upt(evt){const svg=$('gsvg');const p=svg.createSVGPoint();p.x=evt.clientX;p.y=evt.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
+function gWire(){ if(window._gwired)return; window._gwired=1; const svg=$('gsvg');
+  svg.addEventListener('wheel',e=>{e.preventDefault();const f=e.deltaY<0?1.12:0.89;const cu=_upt(e);const s2=Math.max(0.3,Math.min(4,G.z.s*f));
+    G.z.tx=cu.x-(cu.x-G.z.tx)*(s2/G.z.s);G.z.ty=cu.y-(cu.y-G.z.ty)*(s2/G.z.s);G.z.s=s2;applyZoom();},{passive:false});
+  svg.addEventListener('mousedown',e=>{const g=e.target.closest('.node');const cu=_upt(e);G.moved=false;
+    G.drag=g?{type:'node',node:G.idx[g.dataset.id],last:cu}:{type:'pan',last:cu};});
+  window.addEventListener('mousemove',e=>{if(!G.drag)return;const cu=_upt(e);const dx=cu.x-G.drag.last.x,dy=cu.y-G.drag.last.y;
+    if(Math.abs(dx)+Math.abs(dy)>0.4)G.moved=true;
+    if(G.drag.type==='pan'){G.z.tx+=dx;G.z.ty+=dy;G.drag.last=cu;applyZoom();}
+    else{G.drag.node.x=(cu.x-G.z.tx)/G.z.s;G.drag.node.y=(cu.y-G.z.ty)/G.z.s;drawGraph();}});
+  window.addEventListener('mouseup',()=>{G.drag=null;});
+}
+function hoverNode(id){if(G.drag)return;const near=G.adj[id]||new Set();
   document.querySelectorAll('#gsvg .node').forEach(g=>{const nid=g.dataset.id;g.classList.toggle('dim',nid!==id&&!near.has(nid));});
-  document.querySelectorAll('#gsvg .edge').forEach(l=>{l.style.stroke=(l.dataset.s===id||l.dataset.t===id)?'var(--accent)':'';l.style.opacity=(l.dataset.s===id||l.dataset.t===id)?'.9':'.15';});}
+  document.querySelectorAll('#gsvg .edge').forEach(l=>{const on=(l.dataset.s===id||l.dataset.t===id);l.style.stroke=on?'var(--accent)':'';l.style.opacity=on?'.9':'.15';});}
 function unhover(){document.querySelectorAll('#gsvg .node').forEach(g=>g.classList.remove('dim'));document.querySelectorAll('#gsvg .edge').forEach(l=>{l.style.stroke='';l.style.opacity='';});}
 async function inspectNode(id){$('insp').classList.add('on');$('inspbody').innerHTML='<span class="muted mono small">loading…</span>';
   try{const n=await j('/note/'+encodeURIComponent(id));
