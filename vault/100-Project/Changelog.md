@@ -8,6 +8,13 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-10 — 🧭 Research OS visual identity (UI rebuilt from the design system)
+- **What:** Replaced the generic 2-column dashboard with an actual **Research Operating System shell** — app title bar (red mark, mono `RESEARCH-OS · V1.0`, live `[SYSTEM ACTIVE]`, `⌘K`), a mono **left rail** with bracketed workspace indices (`[00] BRIEF … [04] SIGNALS`), editorial huge display titles per workspace, and **engineered panels** (`.panel` primitive with accent corner-ticks + mono `[ SECTION ]` headers).
+- **Make thinking visible:** the KNOWLEDGE-MAP renders the vault as a live **force-directed relationship graph** (nodes colored/sized by type + degree, hover highlights neighbors, click → inspector with links/backlinks). New `/graph/data` endpoint + `graph.data()`.
+- **Command surface:** `⌘K`/`Ctrl-K` palette (global search + jump-to-workspace), keyboard-first (`0–4` switch views, `Esc`).
+- **Every screen composed from primitives** (design system extended: domain-semantic accents, `.panel`/`.tagm`/`.cross`/`.display`); no one-off UI, no raw values in-screen. Passes the logo-removed identity test.
+- **Verified in-browser:** SYSTEM ACTIVE, brief tiles, confidence ledger, graph 48 nodes/152 edges with hover highlighting, command palette, decision engine — all functional, no console errors. 43 tests green.
+
 ## 2026-07-09 — 🎨🖥 Design system + Desktop-first architecture ([[ADR-004-desktop-architecture]])
 - **Design system ("Command Surface"):** `docs/DESIGN-SYSTEM.md` (color/type/spacing/motion tokens, component primitives, interaction + a11y rules, iconography, grids, workspace philosophy) + `ui/tokens.css` (canonical tokens + primitives, offline-first). Dashboard now consumes the system (no raw values in-screen). Charcoal base · red primary · neon-green/neon-red signal colors.
 - **Desktop-first architecture:** added a **lifecycle kernel** (`app/lifecycle.py` — ordered boot, per-step logging, health checks, graceful shutdown) and a **path authority** (`app/paths.py` — application vs user-data separation, portable/installed modes, env overrides, no hardcoded paths). `config.py` sources locations from paths; `desktop/atlas.py` boots via the kernel and shuts down gracefully; structured logging to `logs/`.

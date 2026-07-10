@@ -72,6 +72,24 @@ def _resolve(g: nx.Graph, name: str) -> str | None:
     return None
 
 
+def data(notes: list[Note] | None = None, max_nodes: int = 120) -> dict:
+    """Nodes + edges for the knowledge-graph visualization."""
+    g = build_graph(notes)
+    ug = g.to_undirected()
+    deg = dict(ug.degree())
+    nodes = sorted(g.nodes(data=True), key=lambda n: -deg.get(n[0], 0))[:max_nodes]
+    keep = {n for n, _ in nodes}
+    node_list = [{
+        "id": n,
+        "type": (d.get("type") or "default"),
+        "title": d.get("title") or n,
+        "confidence": d.get("confidence") or "",
+        "degree": deg.get(n, 0),
+    } for n, d in nodes]
+    edges = [{"s": s, "t": t} for s, t in g.edges() if s in keep and t in keep]
+    return {"nodes": node_list, "edges": edges}
+
+
 def summary(notes: list[Note] | None = None) -> dict:
     g = build_graph(notes)
     ug = g.to_undirected()

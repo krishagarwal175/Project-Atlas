@@ -198,6 +198,11 @@ def graph_summary():
     return graphmod.summary()
 
 
+@app.get("/graph/data")
+def graph_data(max_nodes: int = Query(120, ge=10, le=400)):
+    return graphmod.data(max_nodes=max_nodes)
+
+
 class TriageIn(BaseModel):
     signal: str
     target: str

@@ -3,305 +3,388 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ATLAS — Decision OS</title>
+<title>ATLAS — Research OS</title>
 <!-- Design system: canonical tokens + primitives (docs/DESIGN-SYSTEM.md). -->
 <link rel="stylesheet" href="tokens.css" />
 <style>
-  /* This screen consumes the design system. These aliases map the screen's local
-     variable names onto semantic design tokens — no raw values live here. */
+  /* Screen consumes the design system — aliases map local names to semantic tokens. */
   :root{
     --bg:var(--surface-0); --panel:var(--surface-1); --panel2:var(--surface-2);
     --line:var(--border); --tx:var(--ink); --mut:var(--ink-muted);
-    --acc:var(--accent); --acc-dim:var(--accent-tint);
-    --good:var(--signal-pos); --warn:var(--signal-warn); --bad:var(--signal-neg);
-    --mono:var(--font-mono); --rad:var(--radius-md);
+    --acc:var(--accent); --good:var(--signal-pos); --warn:var(--signal-warn); --bad:var(--signal-neg);
+    --mono:var(--font-mono);
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
   ::selection{background:var(--acc);color:#0b0c0e}
-  body{margin:0;font:14px/1.55 -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--tx);
-    background:
-      radial-gradient(900px 500px at 88% -8%, rgba(255,68,58,.10), transparent 60%),
-      radial-gradient(700px 480px at -6% 108%, rgba(70,255,160,.05), transparent 62%),
-      var(--bg);
-    background-attachment:fixed;min-height:100vh}
-  header{padding:15px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:5;
-    background:linear-gradient(180deg,rgba(11,12,14,.92),rgba(11,12,14,.72));backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(255,68,58,.14)}
-  header::before{content:"";width:3px;height:20px;background:var(--acc);box-shadow:0 0 12px rgba(255,68,58,.7);border-radius:2px}
-  header h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
-  header h1 b{color:var(--acc)}
-  header .sub{color:var(--mut);font-size:11px;font-family:var(--mono)}
-  header .k{font-family:var(--mono);font-size:10px;letter-spacing:.05em}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--bad);display:inline-block;box-shadow:0 0 10px var(--bad)}
-  .dot.ok{background:var(--good);box-shadow:0 0 10px var(--good)}
-  main{max-width:1200px;margin:0 auto;padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .card{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:18px;transition:border-color .25s,box-shadow .25s}
-  .card:hover{border-color:rgba(255,68,58,.28);box-shadow:0 0 0 1px rgba(255,68,58,.06),0 10px 30px rgba(0,0,0,.35)}
-  .card.wide{grid-column:1/-1}
-  .card h2{margin:0 0 14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-family:var(--mono);display:flex;align-items:center;gap:8px}
-  .card h2::before{content:"";width:6px;height:6px;background:var(--acc);border-radius:1px;box-shadow:0 0 8px rgba(255,68,58,.7)}
-  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  input,select,button,textarea{font:inherit;color:var(--tx);background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:9px 11px}
-  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(255,68,58,.16)}
-  button{cursor:pointer;background:var(--acc);color:#150406;border:none;font-weight:700;letter-spacing:.02em;transition:.2s}
-  button:hover{background:#ff5b52;box-shadow:0 0 18px rgba(255,68,58,.35)}
-  button.sec{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}
-  button.sec:hover{background:#23252b;border-color:rgba(255,68,58,.4);box-shadow:none}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:14px;text-align:center;position:relative;overflow:hidden}
-  .stat::after{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,var(--acc),transparent);opacity:.5}
-  .stat b{font-size:24px;display:block;font-weight:800;letter-spacing:-.01em}
-  .stat span{color:var(--mut);font-size:10px;font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase}
-  .pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--mut);font-family:var(--mono);letter-spacing:.03em}
-  .pill.good{color:var(--good);border-color:rgba(70,255,160,.4);background:rgba(70,255,160,.07)}
-  .pill.warn{color:var(--warn);border-color:rgba(255,122,61,.4);background:rgba(255,122,61,.07)}
-  .pill.bad{color:var(--bad);border-color:rgba(255,45,85,.45);background:rgba(255,45,85,.08)}
-  ul{list-style:none;margin:0;padding:0}
-  li{padding:8px 0;border-bottom:1px solid var(--line)}
-  li:last-child{border:0}
-  .muted{color:var(--mut)}
-  .k{color:var(--mut);font-size:12px}
-  table{width:100%;border-collapse:collapse;font-size:13px}
+  body{font:var(--text-md)/1.5 var(--font-sans);color:var(--tx);background:var(--bg);overflow:hidden}
+  ::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--surface-3);border:2px solid var(--bg)}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:var(--mono)}
+
+  /* ---------- app frame ---------- */
+  #app{display:grid;grid-template-rows:var(--app-titlebar) 1fr;height:100vh}
+  #titlebar{display:flex;align-items:center;gap:14px;padding:0 14px;border-bottom:1px solid var(--line);
+    background:var(--surface-1);-webkit-app-region:drag}
+  #titlebar .mark{width:11px;height:11px;background:var(--acc);box-shadow:0 0 10px rgba(255,68,58,.7)}
+  #titlebar .brand{font-weight:800;letter-spacing:.16em;font-size:13px}
+  #titlebar .brand b{color:var(--acc)}
+  #titlebar .meta{font-family:var(--mono);font-size:var(--text-2xs);color:var(--mut);letter-spacing:.08em}
+  #titlebar .sp{flex:1}
+  #titlebar .status{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:var(--text-2xs);
+    letter-spacing:.1em;color:var(--mut);border:1px solid var(--line);padding:3px 9px}
+  #titlebar .cmdk{font-family:var(--mono);font-size:var(--text-2xs);color:var(--mut);border:1px solid var(--line);
+    padding:3px 9px;cursor:pointer;-webkit-app-region:no-drag}
+  #titlebar .cmdk:hover{border-color:var(--border-strong);color:var(--tx)}
+
+  #shell{display:grid;grid-template-columns:var(--app-rail) 1fr;min-height:0}
+
+  /* ---------- rail ---------- */
+  #rail{border-right:1px solid var(--line);background:var(--surface-1);display:flex;flex-direction:column;padding:14px 0;overflow:auto}
+  #rail .grp{padding:14px 16px 6px;font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.16em;
+    text-transform:uppercase;color:var(--mut)}
+  .navi{display:flex;align-items:center;gap:11px;padding:9px 16px;cursor:pointer;position:relative;
+    font-family:var(--mono);font-size:var(--text-xs);letter-spacing:.05em;color:var(--mut);
+    transition:color var(--dur-1) var(--ease-out),background var(--dur-1)}
+  .navi .ix{color:var(--surface-3);transition:color var(--dur-1)}
+  .navi:hover{color:var(--tx);background:rgba(255,255,255,.02)}
+  .navi.on{color:var(--tx)}
+  .navi.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--acc);box-shadow:var(--glow-accent)}
+  .navi.on .ix{color:var(--acc)}
+  #rail .foot{margin-top:auto;padding:14px 16px;font-family:var(--mono);font-size:var(--text-2xs);color:var(--mut);border-top:1px solid var(--line)}
+  #rail .foot .api{width:100%;margin-top:6px;font-size:10px}
+
+  /* ---------- workspace ---------- */
+  #work{min-width:0;overflow:auto;position:relative;background:
+    radial-gradient(1100px 620px at 82% -12%, rgba(255,68,58,.07), transparent 60%),var(--bg)}
+  .view{display:none;padding:26px 30px 60px;animation:viewin var(--dur-3) var(--ease-out)}
+  .view.on{display:block}
+  @keyframes viewin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .vhead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px;
+    padding-bottom:16px;border-bottom:1px solid var(--line);position:relative}
+  .vhead .cross{position:absolute;right:-6px;bottom:-6px}
+  .vhead .lead{font-family:var(--mono);font-size:var(--text-2xs);letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:10px}
+  .vhead h1{font:800 clamp(30px,4.4vw,54px)/.94 var(--font-sans);letter-spacing:-.03em;text-transform:uppercase}
+  .vhead h1 .d{color:var(--acc)}
+  .vhead .r{text-align:right;font-family:var(--mono);font-size:var(--text-2xs);color:var(--mut);letter-spacing:.06em;line-height:1.9}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .grid4 .stat{border-radius:0;border:none;background:var(--surface-1)}
+  .panel-hd .ctl{display:flex;gap:6px}
+  ul{list-style:none} li{padding:9px 0;border-bottom:1px solid var(--line);font-size:var(--text-sm)} li:last-child{border:0}
+  .muted{color:var(--mut)} .small{font-size:var(--text-sm)}
+  .k{font-family:var(--mono);font-size:var(--text-2xs);color:var(--mut);letter-spacing:.06em}
+  .field{width:100%} .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
   th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
-  th{color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase}
+  th{color:var(--mut);font:600 var(--text-2xs)/1 var(--mono);text-transform:uppercase;letter-spacing:.08em}
   .win{color:var(--good);font-weight:800}
-  .small{font-size:12px}
-  .tag{font-size:11px;color:var(--mut);font-family:var(--mono)}
-  code{background:var(--acc-dim);color:#ff9a92;padding:1px 6px;border-radius:5px;font-size:12px;font-family:var(--mono)}
-  a{color:var(--acc);text-decoration:none}
-  .acc{color:var(--acc)}
-  .flex{display:flex;gap:16px;flex-wrap:wrap}
+  code{background:var(--accent-tint);color:#ff9a92;padding:1px 6px;font-family:var(--mono);font-size:12px}
+
+  /* ---------- knowledge graph ---------- */
+  #gwrap{position:relative;height:min(64vh,680px);border:1px solid var(--line);background:
+    linear-gradient(var(--line) 1px,transparent 1px) 0 0/40px 40px,
+    linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/40px 40px,var(--surface-1);
+    background-blend-mode:normal;overflow:hidden}
+  #gwrap svg{width:100%;height:100%;display:block}
+  #gwrap .gmeta{position:absolute;left:12px;top:12px;font-family:var(--mono);font-size:var(--text-2xs);color:var(--mut);letter-spacing:.08em}
+  #gwrap .legend{position:absolute;right:12px;bottom:12px;display:flex;gap:12px;font-family:var(--mono);font-size:10px;color:var(--mut)}
+  #gwrap .legend i{display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle}
+  .edge{stroke:var(--border-strong);stroke-width:1}
+  .node{cursor:pointer;transition:opacity var(--dur-2) var(--ease-out)}
+  .node circle{transition:r var(--dur-1),filter var(--dur-1)}
+  .node text{font-family:var(--mono);font-size:9px;fill:var(--mut);pointer-events:none}
+  .dim{opacity:.12}
+
+  /* ---------- inspector ---------- */
+  #insp{position:absolute;top:0;right:0;bottom:0;width:340px;background:var(--surface-1);border-left:1px solid var(--line);
+    transform:translateX(100%);transition:transform var(--dur-2) var(--ease-out);z-index:var(--z-overlay);overflow:auto}
+  #insp.on{transform:none}
+  #insp .ih{padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  #insp .ib{padding:16px}
+  #insp .x{cursor:pointer;color:var(--mut);font-family:var(--mono)}
+
+  /* ---------- command palette ---------- */
+  #cmdk{position:fixed;inset:0;background:rgba(6,7,8,.6);backdrop-filter:blur(4px);z-index:var(--z-modal);
+    display:none;align-items:flex-start;justify-content:center;padding-top:14vh}
+  #cmdk.on{display:flex;animation:viewin var(--dur-2) var(--ease-out)}
+  #cmdk .box{width:min(620px,92vw);background:var(--surface-1);border:1px solid var(--border-strong)}
+  #cmdk input{width:100%;background:none;border:none;border-bottom:1px solid var(--line);color:var(--tx);
+    padding:16px;font:var(--text-lg) var(--font-sans);outline:none}
+  #cmdk .res{max-height:44vh;overflow:auto}
+  #cmdk .res .it{display:flex;justify-content:space-between;gap:10px;padding:11px 16px;cursor:pointer;border-bottom:1px solid var(--line);font-size:var(--text-sm)}
+  #cmdk .res .it:hover,#cmdk .res .it.sel{background:rgba(255,68,58,.08)}
+
   .scores{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
-  .scores label{font-size:10px;color:var(--mut);text-align:center}
+  .scores label{font:10px var(--mono);color:var(--mut);text-align:center}
   .scores input{padding:5px;text-align:center}
+  @media (max-width:1100px){.grid2{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<header>
-  <span class="dot" id="conn"></span>
-  <h1>ATLAS<b>.</b><span style="color:var(--mut);font-weight:500;letter-spacing:.1em"> DECISION-OS</span></h1>
-  <span class="sub" id="hdr">connecting…</span>
-  <span style="flex:1"></span>
-  <span class="k">API</span>
-  <input id="api" value="http://127.0.0.1:8000" style="width:190px" />
-  <button class="sec" onclick="boot()">reconnect</button>
-</header>
+<div id="app">
+  <!-- TITLE BAR -->
+  <div id="titlebar">
+    <span class="mark"></span>
+    <span class="brand">ATLAS<b>.</b></span>
+    <span class="meta">RESEARCH-OS · V1.0</span>
+    <span class="sp"></span>
+    <span class="cmdk" onclick="openCmd()">⌘K &nbsp;COMMAND</span>
+    <span class="status"><span class="dot" id="conn"></span><span id="sysstate">BOOTING</span></span>
+  </div>
 
-<main>
-  <!-- MORNING BRIEF -->
-  <section class="card wide">
-    <h2>🌅 Morning brief</h2>
-    <div class="grid3" id="brief"><div class="stat"><b>—</b><span>loading</span></div></div>
-  </section>
+  <div id="shell">
+    <!-- RAIL -->
+    <nav id="rail">
+      <div class="grp">Workspaces</div>
+      <div class="navi on" data-view="brief"  onclick="setView('brief')"><span class="ix">[00]</span> BRIEF</div>
+      <div class="navi"    data-view="graph"  onclick="setView('graph')"><span class="ix">[01]</span> KNOWLEDGE-MAP</div>
+      <div class="navi"    data-view="know"   onclick="setView('know')"><span class="ix">[02]</span> RESEARCH</div>
+      <div class="navi"    data-view="decide" onclick="setView('decide')"><span class="ix">[03]</span> DECISIONS</div>
+      <div class="navi"    data-view="signal" onclick="setView('signal')"><span class="ix">[04]</span> SIGNALS</div>
+      <div class="grp" style="margin-top:14px">System</div>
+      <div class="navi" onclick="openCmd()"><span class="ix">[/]</span> COMMAND</div>
+      <div class="foot">
+        <div id="hdr">connecting…</div>
+        <input id="api" class="field api" value="" placeholder="http://127.0.0.1:8000" />
+      </div>
+    </nav>
 
-  <!-- SEARCH -->
-  <section class="card">
-    <h2>🔎 Ask the vault</h2>
-    <div class="row">
-      <input id="q" placeholder="e.g. should we launch a referral program" style="flex:1" />
-      <button onclick="doSearch()">Search</button>
-    </div>
-    <ul id="results" class="small"></ul>
-  </section>
+    <!-- WORKSPACE -->
+    <main id="work">
+      <!-- 00 BRIEF -->
+      <section class="view on" id="v-brief">
+        <div class="vhead"><span class="cross"></span>
+          <div><div class="lead">[00] / Morning Brief · <span id="today"></span></div>
+            <h1>Decide with<br>evidence<span class="d">.</span></h1></div>
+          <div class="r" id="briefmeta">[SYSTEM]<br>INITIALIZING</div>
+        </div>
+        <div class="grid4" id="brief"></div>
+        <div class="grid2" style="margin-top:16px">
+          <div class="panel"><div class="panel-hd"><span class="idx">[ CONFIDENCE LEDGER ]</span><span class="measure" id="epicount">—</span></div><div class="panel-bd"><ul id="epi" class="small"></ul></div></div>
+          <div class="panel"><div class="panel-hd"><span class="idx">[ SIGNAL INBOX ]</span><span class="measure" id="sigcount">—</span></div><div class="panel-bd"><ul id="signals" class="small"></ul></div></div>
+        </div>
+      </section>
 
-  <!-- CONFIDENCE BOARD -->
-  <section class="card">
-    <h2>🧠 Confidence board (derived from evidence)</h2>
-    <ul id="epi" class="small"></ul>
-  </section>
+      <!-- 01 KNOWLEDGE MAP -->
+      <section class="view" id="v-graph">
+        <div class="vhead"><span class="cross"></span>
+          <div><div class="lead">[01] / Knowledge Map · relationship graph</div>
+            <h1>Make thinking<br>visible<span class="d">.</span></h1></div>
+          <div class="r" id="gstat">NODES —<br>EDGES —</div>
+        </div>
+        <div id="gwrap">
+          <div class="gmeta">~/GRAPH/RENDER · drag-free force layout · click a node to inspect</div>
+          <svg id="gsvg" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="legend">
+            <span><i style="background:#ff443a"></i>THEORY</span>
+            <span><i style="background:#ff7a3d"></i>PATTERN</span>
+            <span><i style="background:#8b8e96"></i>QUESTION</span>
+            <span><i style="background:#ff5b52"></i>DECISION</span>
+            <span><i style="background:#c9ccd2"></i>CASE</span>
+          </div>
+        </div>
+      </section>
 
-  <!-- MARKET SIGNALS -->
-  <section class="card">
-    <h2>📡 Market signals — needs triage</h2>
-    <ul id="signals" class="small"></ul>
-  </section>
+      <!-- 02 RESEARCH -->
+      <section class="view" id="v-know">
+        <div class="vhead"><span class="cross"></span>
+          <div><div class="lead">[02] / Research · search · synthesis</div>
+            <h1>Interrogate<br>the vault<span class="d">.</span></h1></div>
+          <div class="r">EVIDENCE · PROVENANCE<br>OVER PREDICTION</div>
+        </div>
+        <div class="panel" style="margin-bottom:16px"><div class="panel-hd"><span class="idx">[ ASK THE VAULT ]</span><span class="measure">~/QUERY</span></div>
+          <div class="panel-bd"><div class="row"><input id="q" class="field" style="flex:1" placeholder="should we launch a referral program" /><button class="btn btn-primary" onclick="doSearch()">SEARCH</button></div><ul id="results" class="small" style="margin-top:10px"></ul></div></div>
+        <div class="panel"><div class="panel-hd"><span class="idx">[ SYNTHESIS · CANDIDATE PATTERNS ]</span><button class="btn" onclick="loadSynth()">SYNTHESIZE</button></div>
+          <div class="panel-bd"><ul id="synth" class="small"></ul></div></div>
+      </section>
 
-  <!-- SYNTHESIS -->
-  <section class="card wide">
-    <h2>💡 Synthesis — patterns drafted from case studies</h2>
-    <div class="row"><button onclick="loadSynth()">Synthesize</button>
-      <span class="muted small">clusters case studies → drafts candidate patterns you review &amp; promote</span></div>
-    <ul id="synth" class="small" style="margin-top:10px"></ul>
-  </section>
+      <!-- 03 DECISIONS -->
+      <section class="view" id="v-decide">
+        <div class="vhead"><span class="cross"></span>
+          <div><div class="lead">[03] / Decision Engine · WSM + DNA guardrail</div>
+            <h1>Weigh the<br>alternatives<span class="d">.</span></h1></div>
+          <div class="r">QUALITY ≠ OUTCOME<br>DNA-CHECKED</div>
+        </div>
+        <div class="panel"><div class="panel-hd"><span class="idx">[ COMPARE ]</span><span class="measure"><select id="dtype" class="field" style="font-size:11px"></select></span></div>
+          <div class="panel-bd"><input id="dq" class="field" value="Which college tier should we target as the beachhead?" style="margin-bottom:12px"/>
+            <div class="row" id="alts" style="align-items:stretch"></div>
+            <div class="row" style="margin-top:12px"><button class="btn btn-primary" onclick="doDecide()">RUN COMPARISON</button></div>
+            <div id="decision" style="margin-top:14px"></div></div></div>
+      </section>
 
-  <!-- GRAPH -->
-  <section class="card">
-    <h2>🕸 Knowledge graph</h2>
-    <div class="k" style="margin-bottom:6px">Most central ideas</div>
-    <ul id="central" class="small"></ul>
-    <div class="row" style="margin-top:10px">
-      <input id="pa" placeholder="from" style="flex:1" />
-      <input id="pb" placeholder="to" style="flex:1" />
-      <button class="sec" onclick="doPath()">Path</button>
-    </div>
-    <div id="path" class="small muted" style="margin-top:8px"></div>
-  </section>
+      <!-- 04 SIGNALS -->
+      <section class="view" id="v-signal">
+        <div class="vhead"><span class="cross"></span>
+          <div><div class="lead">[04] / Market Signals · governance</div>
+            <h1>What changed<br>outside<span class="d">.</span></h1></div>
+          <div class="r">SIGNALS INFORM ·<br>NEVER AUTO-SCORE</div>
+        </div>
+        <div class="grid2">
+          <div class="panel"><div class="panel-hd"><span class="idx">[ UNTRIAGED INBOX ]</span><span class="measure" id="sigcount2">—</span></div><div class="panel-bd"><ul id="signals2" class="small"></ul></div></div>
+          <div class="panel"><div class="panel-hd"><span class="idx">[ RESEARCH PATHWAY ]</span><span class="measure">A → B</span></div>
+            <div class="panel-bd"><div class="row"><input id="pa" class="field" style="flex:1" placeholder="from note"/><input id="pb" class="field" style="flex:1" placeholder="to note"/><button class="btn" onclick="doPath()">TRACE</button></div>
+              <div id="path" class="small muted mono" style="margin-top:12px"></div>
+              <div class="k" style="margin-top:18px">MOST CENTRAL IDEAS</div><ul id="central" class="small"></ul></div></div>
+        </div>
+      </section>
 
-  <!-- DECISION ENGINE -->
-  <section class="card wide">
-    <h2>🎯 Decision engine</h2>
-    <div class="row">
-      <input id="dq" placeholder="decision question" style="flex:1" value="Which college tier should we target as the beachhead?" />
-      <select id="dtype"></select>
-      <button onclick="doDecide()">Compare</button>
-    </div>
-    <div class="flex" id="alts" style="margin-top:12px"></div>
-    <div id="decision" style="margin-top:14px"></div>
-  </section>
-</main>
+      <!-- INSPECTOR -->
+      <aside id="insp"><div class="ih"><span class="idx">[ INSPECTOR ]</span><span class="x" onclick="closeInsp()">ESC ✕</span></div><div class="ib" id="inspbody"></div></aside>
+    </main>
+  </div>
+</div>
+
+<!-- COMMAND PALETTE -->
+<div id="cmdk" onclick="if(event.target.id==='cmdk')closeCmd()">
+  <div class="box"><input id="cmdq" placeholder="Search the vault or jump to a workspace…" oninput="cmdSearch()" onkeydown="cmdKey(event)"/><div class="res" id="cmdres"></div></div>
+</div>
 
 <script>
 const $=id=>document.getElementById(id);
-// When the dashboard is SERVED by Atlas (desktop .exe or `python cli.py serve`),
-// talk to the same origin whatever the port. When opened as a file://, fall back
-// to the value in the API box.
-if(location.protocol.startsWith('http')){document.addEventListener('DOMContentLoaded',()=>{$('api').value=location.origin;});}
-const api=()=>{const v=$('api').value.trim();return (v||location.origin).replace(/\/$/,'');};
 const DIMS=['impact','confidence','alignment','cost','risk','effort','time'];
-const badgeFor=(s)=>({speculative:'',emerging:'',supported:'good','well-tested':'good',institutional:'good'}[s]||'');
+const NCOL={question:'#8b8e96',theory:'#ff443a',pattern:'#ff7a3d','case-study':'#c9ccd2',decision:'#ff5b52',assumption:'#c9ccd2',contradiction:'#ff2d55'};
+const badge=s=>({supported:'chip-pos','well-tested':'chip-pos',institutional:'chip-pos'}[s]||(s==='speculative'||s==='emerging'?'':''));
+const api=()=>{const v=$('api').value.trim();return (v||'http://127.0.0.1:8000').replace(/\/$/,'');};
+async function j(p,o){const r=await fetch(api()+p,o);if(!r.ok)throw new Error(r.status);return r.json();}
+// Same-origin when Atlas serves the UI (the packaged app); else the local engine on :8000.
+async function resolveApi(){
+  if($('api').value.trim())return;
+  if(location.protocol.startsWith('http')){
+    try{const r=await fetch(location.origin+'/health');if(r.ok){$('api').value=location.origin;return;}}catch(e){}
+  }
+  $('api').value='http://127.0.0.1:8000';
+}
 
-async function j(path,opts){const r=await fetch(api()+path,opts);if(!r.ok)throw new Error(r.status);return r.json();}
+/* ---- views ---- */
+function setView(v){
+  document.querySelectorAll('.view').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.navi').forEach(n=>n.classList.toggle('on',n.dataset.view===v));
+  $('v-'+v).classList.add('on');
+  if(v==='graph'&&!window._gdrawn){renderGraph();window._gdrawn=1;}
+}
 
+/* ---- boot ---- */
 async function boot(){
+  $('today').textContent=new Date().toISOString().slice(0,10);
+  await resolveApi();
   try{
     const h=await j('/health');
-    $('conn').classList.add('ok');
-    $('hdr').textContent=`${h.notes} notes · search:${h.search_backend} · vault ok`;
+    $('conn').classList.add('ok'); $('sysstate').textContent='SYSTEM ACTIVE';
+    $('hdr').textContent=h.notes+' notes · '+h.search_backend;
     loadBrief();loadEpi();loadSignals();loadCentral();loadPresets();renderAlts();
-  }catch(e){
-    $('conn').classList.remove('ok');
-    $('hdr').textContent='API offline — start it: cd backend && python cli.py serve';
-  }
+  }catch(e){ $('conn').classList.remove('ok'); $('sysstate').textContent='OFFLINE';
+    $('hdr').textContent='engine offline — cd app && python cli.py serve'; }
 }
 
 async function loadBrief(){
   const [a,e,n]=await Promise.all([j('/audit'),j('/epistemics'),j('/notes')]);
   const sig=(await j('/notes?type=market-signal')).count;
-  const hi=a.summary.high||0,md=a.summary.medium||0,lo=a.summary.low||0;
-  $('brief').innerHTML=`
-    <div class="stat"><b>${n.count}</b><span>notes in vault</span></div>
-    <div class="stat"><b>${e.drift}</b><span>confidence drifts</span></div>
-    <div class="stat"><b>${sig}</b><span>market signals</span></div>
-    <div class="stat"><b style="color:${hi?'var(--bad)':'var(--tx)'}">${hi}</b><span>high issues</span></div>
-    <div class="stat"><b>${md}</b><span>medium issues</span></div>
-    <div class="stat"><b>${lo}</b><span>low issues</span></div>`;
+  const hi=a.summary.high||0,md=a.summary.medium||0;
+  $('briefmeta').innerHTML='[SYSTEM ACTIVE]<br>'+n.count+' NOTES INDEXED';
+  const S=(v,l,c)=>`<div class="stat"><b style="${c||''}">${v}</b><span>${l}</span></div>`;
+  $('brief').innerHTML=S(n.count,'notes in vault')+S(e.drift,'confidence drifts',e.drift?'color:var(--bad)':'')+S(sig,'signals · untriaged')+S((hi+md)||0,'governance flags',hi?'color:var(--bad)':'');
 }
-
-async function doSearch(){
-  const q=$('q').value.trim();if(!q)return;
-  const d=await j('/search?q='+encodeURIComponent(q)+'&k=8');
-  $('results').innerHTML=d.results.map(r=>`<li>
-    <b>${r.title}</b> <span class="pill">${r.type}</span>
-    <span class="pill ${badgeFor(r.confidence)}">${r.confidence}</span>
-    <span class="tag">score ${r.score}</span><br>
-    <span class="muted">${r.snippet}</span></li>`).join('')||'<li class="muted">no matches</li>';
-}
-$('q')&&($('q').onkeydown=e=>{if(e.key==='Enter')doSearch();});
-
 async function loadEpi(){
-  const d=await j('/epistemics');
-  $('epi').innerHTML=d.assessments.map(a=>{
-    const b=(a.contested?'⚑':'')+(a.decaying?'⌛':'');
-    const drift=a.drift?`<span class="pill bad">drift → ${a.derived}</span>`:'';
-    return `<li>${b} <b>${a.note}</b>
-      <span class="pill ${badgeFor(a.derived)}">${a.derived}</span>${drift}<br>
-      <span class="muted">${a.derivation}</span></li>`;
-  }).join('');
+  const d=await j('/epistemics'); $('epicount').textContent=d.count+' TRACKED';
+  $('epi').innerHTML=d.assessments.map(a=>{const b=(a.contested?'⚑':'')+(a.decaying?'⌛':'');
+    const dr=a.drift?`<span class="chip chip-neg">drift→${a.derived}</span>`:'';
+    return `<li>${b} <b>${a.note}</b> <span class="chip ${badge(a.derived)}">${a.derived}</span>${dr}<br><span class="muted small">${a.derivation}</span></li>`;}).join('');
 }
-
 let QOPTS=[];
-async function loadTargets(){
-  const [q,t]=await Promise.all([j('/notes?type=question'),j('/notes?type=theory')]);
-  QOPTS=[...q.notes,...t.notes].map(n=>n.note);
-}
+async function loadTargets(){const[q,t]=await Promise.all([j('/notes?type=question'),j('/notes?type=theory')]);QOPTS=[...q.notes,...t.notes].map(n=>n.note);}
 async function loadSignals(){
-  await loadTargets();
-  const a=await j('/audit');
-  const untriaged=a.findings.filter(f=>f.category==='untriaged-signal');
-  $('signals').innerHTML=untriaged.map((s,i)=>`<li><b>${s.note}</b>
-    <div class="row small" style="margin-top:5px">
-      <select id="tg${i}" style="flex:1">${QOPTS.map(o=>`<option>${o}</option>`).join('')}</select>
-      <select id="st${i}"><option>supports</option><option>contradicts</option></select>
-      <button class="sec" onclick="triage('${s.note}',${i})">link</button>
-    </div></li>`).join('')||'<li class="muted">inbox clear ✓</li>';
+  await loadTargets(); const a=await j('/audit');
+  const u=a.findings.filter(f=>f.category==='untriaged-signal');
+  const html=u.map((s,i)=>`<li><b>${s.note}</b>
+    <div class="row small" style="margin-top:5px"><select id="tg${i}" class="field" style="flex:1">${QOPTS.map(o=>`<option>${o}</option>`).join('')}</select>
+    <select id="st${i}" class="field"><option>supports</option><option>contradicts</option></select>
+    <button class="btn" onclick="triage('${s.note}',${i})">LINK</button></div></li>`).join('')||'<li class="muted">inbox clear ✓</li>';
+  $('signals').innerHTML=html; $('signals2').innerHTML=html;
+  $('sigcount').textContent=u.length+' PENDING'; $('sigcount2').textContent=u.length+' PENDING';
 }
-async function triage(signal,i){
-  const target=$('tg'+i).value, stance=$('st'+i).value;
-  await j('/triage',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({signal,target,stance})});
-  loadSignals();loadBrief();loadCentral();
-}
-
-async function loadSynth(){
-  $('synth').innerHTML='<li class="muted">clustering…</li>';
-  const d=await j('/synthesize');
-  $('synth').innerHTML=d.candidates.map(c=>{
-    const badge=c.novelty==='new'?'<span class="pill good">NEW</span>':`<span class="pill">covered by ${c.existing_pattern}</span>`;
-    const btn=c.novelty==='new'?`<button class="sec" onclick='promoteSynth(${JSON.stringify(c.members)})'>promote → pattern</button>`:'';
-    return `<li>${badge} <b>${c.companies.join(' + ')}</b>
-      <span class="tag">tags: ${c.shared_tags.join(', ')||'—'}</span> ${btn}<br>
-      <span class="muted">${c.draft}</span></li>`;
-  }).join('')||'<li class="muted">need ≥2 case studies to synthesize</li>';
-}
-async function promoteSynth(members){
-  const r=await j('/synthesize/promote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({members})});
-  alert(r.ok?`Draft pattern ${r.id} written to the vault (review before accepting).`:'promote failed');
-  loadSynth();loadBrief();
-}
-async function loadCentral(){
-  const d=await j('/graph/summary');
-  $('central').innerHTML=d.top_central.slice(0,8).map(([n,s])=>
-    `<li><span class="tag">${s.toFixed(3)}</span> ${n}</li>`).join('');
-}
-async function doPath(){
-  const a=$('pa').value.trim(),b=$('pb').value.trim();if(!a||!b)return;
-  const d=await j('/graph/path?a='+encodeURIComponent(a)+'&b='+encodeURIComponent(b));
-  $('path').innerHTML=d.found?d.path.join(' &nbsp;→&nbsp; '):'no path found';
-}
-
-async function loadPresets(){
-  const d=await j('/decision/presets');
-  $('dtype').innerHTML=Object.keys(d.weight_presets).map(k=>`<option>${k}</option>`).join('');
-  $('dtype').value='channel-choice';
-}
-const ALTS=[
-  {name:'Tier-2 colleges first',s:{impact:8,confidence:5,alignment:8,cost:4,risk:5,effort:5,time:4},dna:''},
-  {name:'Tier-1 colleges first',s:{impact:6,confidence:6,alignment:5,cost:6,risk:6,effort:6,time:6},dna:''},
-];
-function renderAlts(){
-  $('alts').innerHTML=ALTS.map((a,i)=>`<div class="card" style="flex:1;min-width:320px;background:var(--panel2)">
-    <input value="${a.name}" onchange="ALTS[${i}].name=this.value" style="width:100%"/>
-    <div class="scores">${DIMS.map(d=>`<div><label>${d.slice(0,4)}</label>
-      <input type="number" min="0" max="10" value="${a.s[d]}" onchange="ALTS[${i}].s['${d}']=+this.value"/></div>`).join('')}</div>
-    <input placeholder="DNA conflict (optional, e.g. NN2)" value="${a.dna}" onchange="ALTS[${i}].dna=this.value" style="width:100%;margin-top:8px"/>
-  </div>`).join('');
-}
-async function doDecide(){
-  const body={question:$('dq').value,decision_type:$('dtype').value,
-    alternatives:ALTS.map(a=>({name:a.name,scores:a.s,dna_conflict:a.dna}))};
-  const d=await j('/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const dims=Object.keys(d.weights);
-  const rows=d.ranked.map(r=>`<tr>
-    <td>${r.rank}</td>
-    <td class="${r.rank===1&&!r.dna_conflict?'win':''}">${r.name}${r.dna_conflict?' <span class="pill bad">⚠DNA</span>':''}</td>
-    ${dims.map(x=>`<td>${r.contributions[x].toFixed(3)}</td>`).join('')}
-    <td><b>${r.total.toFixed(3)}</b></td></tr>`).join('');
-  const frag=d.is_fragile?`<span class="pill warn">fragile — ${d.fragile_reason}</span>`:'<span class="pill good">robust</span>';
-  const dna=d.dna_flags.length?`<div class="small" style="margin-top:6px">⚠ ${d.dna_flags.join('; ')}</div>`:'';
-  $('decision').innerHTML=`<div class="row"><b>Winner: <span class="win">${d.winner}</span></b> ${frag}
-      <span style="flex:1"></span>
-      <button class="sec" onclick="saveDecision()">💾 Save decision note</button></div>${dna}
+async function triage(sig,i){await j('/triage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({signal:sig,target:$('tg'+i).value,stance:$('st'+i).value})});loadSignals();loadBrief();}
+async function doSearch(){const q=$('q').value.trim();if(!q)return;const d=await j('/search?q='+encodeURIComponent(q)+'&k=8');
+  $('results').innerHTML=d.results.map(r=>`<li><b>${r.title}</b> <span class="chip">${r.type}</span> <span class="chip ${badge(r.confidence)}">${r.confidence}</span> <span class="k">${r.score}</span><br><span class="muted small">${r.snippet}</span></li>`).join('')||'<li class="muted">no matches</li>';}
+async function loadCentral(){const d=await j('/graph/summary');$('central').innerHTML=d.top_central.slice(0,8).map(([n,s])=>`<li><span class="k">${s.toFixed(3)}</span> ${n}</li>`).join('');}
+async function doPath(){const a=$('pa').value.trim(),b=$('pb').value.trim();if(!a||!b)return;const d=await j('/graph/path?a='+encodeURIComponent(a)+'&b='+encodeURIComponent(b));$('path').innerHTML=d.found?d.path.join('  →  '):'no path found';}
+async function loadSynth(){$('synth').innerHTML='<li class="muted">clustering…</li>';const d=await j('/synthesize');
+  $('synth').innerHTML=d.candidates.map(c=>{const nb=c.novelty==='new'?'<span class="chip chip-pos">NEW</span>':`<span class="chip">covered · ${c.existing_pattern}</span>`;
+    const btn=c.novelty==='new'?`<button class="btn" onclick='promoteSynth(${JSON.stringify(c.members)})'>PROMOTE</button>`:'';
+    return `<li>${nb} <b>${c.companies.join(' + ')}</b> <span class="k">${(c.shared_tags||[]).join(', ')}</span> ${btn}<br><span class="muted small">${c.draft}</span></li>`;}).join('')||'<li class="muted">need ≥2 case studies</li>';}
+async function promoteSynth(m){const r=await j('/synthesize/promote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({members:m})});if(r.ok){window._gdrawn=0;loadSynth();}}
+async function loadPresets(){const d=await j('/decision/presets');$('dtype').innerHTML=Object.keys(d.weight_presets).map(k=>`<option>${k}</option>`).join('');$('dtype').value='channel-choice';}
+const ALTS=[{name:'Tier-2 colleges first',s:{impact:8,confidence:5,alignment:8,cost:4,risk:5,effort:5,time:4},dna:''},{name:'Tier-1 colleges first',s:{impact:6,confidence:6,alignment:5,cost:6,risk:6,effort:6,time:6},dna:''}];
+function renderAlts(){$('alts').innerHTML=ALTS.map((a,i)=>`<div class="panel" style="flex:1;min-width:300px;background:var(--surface-2)"><div class="panel-bd">
+  <input class="field" value="${a.name}" onchange="ALTS[${i}].name=this.value"/><div class="scores">${DIMS.map(d=>`<div><label>${d.slice(0,4)}</label><input class="field" type="number" min="0" max="10" value="${a.s[d]}" onchange="ALTS[${i}].s['${d}']=+this.value"/></div>`).join('')}</div>
+  <input class="field" placeholder="DNA conflict (e.g. NN2)" value="${a.dna}" onchange="ALTS[${i}].dna=this.value" style="margin-top:8px"/></div></div>`).join('');}
+async function doDecide(){const body={question:$('dq').value,decision_type:$('dtype').value,alternatives:ALTS.map(a=>({name:a.name,scores:a.s,dna_conflict:a.dna}))};
+  const d=await j('/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const dims=Object.keys(d.weights);
+  const rows=d.ranked.map(r=>`<tr><td>${r.rank}</td><td class="${r.rank===1&&!r.dna_conflict?'win':''}">${r.name}${r.dna_conflict?' <span class="chip chip-neg">⚠DNA</span>':''}</td>${dims.map(x=>`<td>${r.contributions[x].toFixed(3)}</td>`).join('')}<td><b>${r.total.toFixed(3)}</b></td></tr>`).join('');
+  const frag=d.is_fragile?`<span class="chip chip-warn">fragile · ${d.fragile_reason}</span>`:'<span class="chip chip-pos">robust</span>';
+  $('decision').innerHTML=`<div class="row"><b>WINNER: <span class="win">${d.winner}</span></b> ${frag}<span style="flex:1"></span><button class="btn" onclick="saveDecision()">💾 SAVE NOTE</button></div>
     <table style="margin-top:10px"><tr><th>#</th><th>alternative</th>${dims.map(x=>`<th>${x.slice(0,4)}</th>`).join('')}<th>total</th></tr>${rows}</table>
-    <div id="decmsg" class="muted small" style="margin-top:6px">The number is disposable — the reasoning trace, DNA check, and evidence are the asset.</div>`;
-}
-async function saveDecision(){
-  const body={question:$('dq').value,decision_type:$('dtype').value,write_note:true,
-    alternatives:ALTS.map(a=>({name:a.name,scores:a.s,dna_conflict:a.dna}))};
-  const d=await j('/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  $('decmsg').innerHTML=d.note?`✅ Saved <code>${d.note.id}</code> to the vault (600-Decisions/).`:'save failed';
-  loadBrief();
-}
+    <div id="decmsg" class="muted small mono" style="margin-top:6px">The number is disposable — the reasoning trace, DNA check, and evidence are the asset.</div>`;}
+async function saveDecision(){const body={question:$('dq').value,decision_type:$('dtype').value,write_note:true,alternatives:ALTS.map(a=>({name:a.name,scores:a.s,dna_conflict:a.dna}))};const d=await j('/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});$('decmsg').innerHTML=d.note?`✅ Saved <code>${d.note.id}</code> → 600-Decisions/`:'save failed';window._gdrawn=0;loadBrief();}
 
+/* ---- knowledge graph (force layout, SVG) ---- */
+async function renderGraph(){
+  let d; try{d=await j('/graph/data?max_nodes=110');}catch(e){return;}
+  $('gstat').innerHTML='NODES '+d.nodes.length+'<br>EDGES '+d.edges.length;
+  const W=1000,H=640,svg=$('gsvg'),idx={};
+  d.nodes.forEach((n,i)=>{idx[n.id]=n;n.x=W/2+Math.cos(i)*260*Math.random()+ (Math.random()*80-40);n.y=H/2+Math.sin(i)*220*Math.random()+(Math.random()*80-40);n.vx=0;n.vy=0;});
+  const E=d.edges.filter(e=>idx[e.s]&&idx[e.t]);
+  // force sim
+  for(let it=0;it<320;it++){
+    const k=it<120?1:0.6;
+    for(let i=0;i<d.nodes.length;i++){const a=d.nodes[i];for(let jx=i+1;jx<d.nodes.length;jx++){const b=d.nodes[jx];
+      let dx=a.x-b.x,dy=a.y-b.y,ds=dx*dx+dy*dy||0.01,f=1400/ds;a.vx+=dx*f*0.001;a.vy+=dy*f*0.001;b.vx-=dx*f*0.001;b.vy-=dy*f*0.001;}}
+    E.forEach(e=>{const a=idx[e.s],b=idx[e.t];let dx=b.x-a.x,dy=b.y-a.y,dist=Math.sqrt(dx*dx+dy*dy)||1,f=(dist-90)*0.02;a.vx+=dx/dist*f;a.vy+=dy/dist*f;b.vx-=dx/dist*f;b.vy-=dy/dist*f;});
+    d.nodes.forEach(n=>{n.vx+=(W/2-n.x)*0.002;n.vy+=(H/2-n.y)*0.002;n.x+=n.vx*k;n.y+=n.vy*k;n.vx*=0.82;n.vy*=0.82;n.x=Math.max(20,Math.min(W-20,n.x));n.y=Math.max(20,Math.min(H-20,n.y));});
+  }
+  const adj={};d.nodes.forEach(n=>adj[n.id]=new Set());E.forEach(e=>{adj[e.s].add(e.t);adj[e.t].add(e.s);});
+  let svgs='';
+  E.forEach(e=>{const a=idx[e.s],b=idx[e.t];svgs+=`<line class="edge" data-s="${e.s}" data-t="${e.t}" x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}"/>`;});
+  d.nodes.forEach(n=>{const r=Math.min(4+n.degree*1.4,14),c=NCOL[n.type]||'#5a5d64';
+    const lbl=n.degree>=3?`<text x="${(n.x+r+3).toFixed(1)}" y="${(n.y+3).toFixed(1)}">${n.id.slice(0,20)}</text>`:'';
+    svgs+=`<g class="node" data-id="${n.id}" onmouseover="hoverNode('${n.id}')" onmouseout="unhover()" onclick="inspectNode('${n.id}')">
+      <circle cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${r}" fill="${c}" style="filter:drop-shadow(0 0 5px ${c}66)"/>${lbl}</g>`;});
+  svg.innerHTML=svgs; window._adj=adj;
+}
+function hoverNode(id){const near=window._adj[id]||new Set();
+  document.querySelectorAll('#gsvg .node').forEach(g=>{const nid=g.dataset.id;g.classList.toggle('dim',nid!==id&&!near.has(nid));});
+  document.querySelectorAll('#gsvg .edge').forEach(l=>{l.style.stroke=(l.dataset.s===id||l.dataset.t===id)?'var(--accent)':'';l.style.opacity=(l.dataset.s===id||l.dataset.t===id)?'.9':'.15';});}
+function unhover(){document.querySelectorAll('#gsvg .node').forEach(g=>g.classList.remove('dim'));document.querySelectorAll('#gsvg .edge').forEach(l=>{l.style.stroke='';l.style.opacity='';});}
+async function inspectNode(id){$('insp').classList.add('on');$('inspbody').innerHTML='<span class="muted mono small">loading…</span>';
+  try{const n=await j('/note/'+encodeURIComponent(id));
+    $('inspbody').innerHTML=`<div class="lead k">[ ${(n.type||'note').toUpperCase()} ]</div>
+      <div class="display" style="font-size:22px;margin:6px 0 12px">${n.title}</div>
+      <div class="row" style="gap:6px;margin-bottom:12px"><span class="chip ${badge(n.frontmatter['confidence-state'])}">${n.frontmatter['confidence-state']||'—'}</span><span class="chip">${n.frontmatter.freshness||'fresh'}</span></div>
+      <div class="k">LINKS OUT (${n.outlinks.length})</div><ul class="small">${n.outlinks.slice(0,8).map(o=>`<li onclick="inspectNode('${o}')" style="cursor:pointer">${o}</li>`).join('')||'<li class="muted">none</li>'}</ul>
+      <div class="k" style="margin-top:10px">BACKLINKS (${n.backlinks.length})</div><ul class="small">${n.backlinks.slice(0,8).map(o=>`<li onclick="inspectNode('${o}')" style="cursor:pointer">${o}</li>`).join('')||'<li class="muted">none</li>'}</ul>`;
+  }catch(e){$('inspbody').innerHTML='<span class="muted">not found</span>';}}
+function closeInsp(){$('insp').classList.remove('on');}
+
+/* ---- command palette ---- */
+let cmdItems=[],cmdSel=0;
+function openCmd(){$('cmdk').classList.add('on');$('cmdq').value='';$('cmdq').focus();cmdSearch();}
+function closeCmd(){$('cmdk').classList.remove('on');}
+const VIEWS=[['brief','BRIEF'],['graph','KNOWLEDGE-MAP'],['know','RESEARCH'],['decide','DECISIONS'],['signal','SIGNALS']];
+async function cmdSearch(){const q=$('cmdq').value.trim();
+  let items=VIEWS.filter(v=>!q||v[1].toLowerCase().includes(q.toLowerCase())).map(v=>({label:'→ '+v[1],kind:'JUMP',act:()=>{setView(v[0]);closeCmd();}}));
+  if(q.length>1){try{const d=await j('/search?q='+encodeURIComponent(q)+'&k=6');items=items.concat(d.results.map(r=>({label:r.title,kind:r.type.toUpperCase(),act:()=>{setView('graph');inspectNode(r.note);closeCmd();}})));}catch(e){}}
+  cmdItems=items;cmdSel=0;
+  $('cmdres').innerHTML=items.map((it,i)=>`<div class="it ${i===0?'sel':''}" onclick="cmdRun(${i})"><span>${it.label}</span><span class="k">${it.kind}</span></div>`).join('')||'<div class="it muted">no results</div>';}
+function cmdRun(i){cmdItems[i]&&cmdItems[i].act();}
+function cmdKey(e){if(e.key==='Escape')closeCmd();if(e.key==='Enter')cmdRun(cmdSel);
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();cmdSel=Math.max(0,Math.min(cmdItems.length-1,cmdSel+(e.key==='ArrowDown'?1:-1)));
+    document.querySelectorAll('#cmdres .it').forEach((el,i)=>el.classList.toggle('sel',i===cmdSel));}}
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openCmd();}
+  if(e.key==='Escape'){closeCmd();closeInsp();}
+  if(!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){const m={'0':'brief','1':'graph','2':'know','3':'decide','4':'signal'};if(m[e.key])setView(m[e.key]);}
+});
 boot();
 </script>
 </body>

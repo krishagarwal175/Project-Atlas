@@ -152,6 +152,18 @@ is *always warm* — quiet, fast, and entirely yours.
 
 ---
 
+## 11b. Application shell & knowledge visualization (the identity)
+Atlas's recognizable form — it must pass the **logo-removed test**: identifiable from one screenshot.
+- **App frame:** title bar (red square mark + `ATLAS.` + mono `RESEARCH-OS · V1.0` + live `[SYSTEM ACTIVE]` dot + `⌘K`), a mono **left rail** with bracketed workspace indices (`[00] BRIEF … [04] SIGNALS`), and a single content workspace. No tabs, no browser chrome.
+- **Editorial titling:** each workspace opens with a huge uppercase display title (`MAKE THINKING VISIBLE.`) + a mono `[NN] / lead` label + right-aligned technical metadata. Typography *is* the hierarchy.
+- **Engineered panels:** `.panel` primitive — 1px border, accent **corner ticks**, mono `[ SECTION ]` header, right-aligned `.measure` metadata. Never a plain card.
+- **Knowledge visualization (mandatory, not markdown):** the `KNOWLEDGE-MAP` renders the vault as a live **force-directed relationship graph** — nodes colored by type (theory/pattern/question/decision/case), sized by degree, hover highlights neighbors + edges in accent, click opens the **inspector** (type, confidence, links out, backlinks). This is "make thinking visible."
+- **Command surface:** `⌘K` / `Ctrl-K` palette — global search + jump-to-workspace, keyboard-driven (`0–4` switch views, `Esc` closes).
+- **Motion = cognition:** view enter (8px rise), graph nodes/edges settle via a short force sim, hover dims the unrelated — every motion answers "what changed / what connects." Never decorative.
+
+## 11c. Sound design (future — do not implement)
+Interaction sounds (knowledge accepted, theory promoted, decision finalized, governance warning) are anticipated. Keep interactions routed through named handlers so a sound layer can subscribe later; do not add audio now.
+
 ## 12. Governance of the system
 - Changes to tokens/primitives are **design-system-level** and get a note in the changelog.
 - A screen may not introduce a raw hex value, off-scale spacing, or a bespoke motion curve —
