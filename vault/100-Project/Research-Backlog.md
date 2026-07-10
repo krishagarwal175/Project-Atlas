@@ -14,7 +14,7 @@ updated: 2026-07-10
 - [ ] **Indian campus hiring landscape** → sizing + incumbents for [[Competitors]] / [[Q-tier2-before-tier1]].
 
 ## Medium priority (foundational, sourced)
-- [ ] Stripe & Airbnb histories (Gen-2, [[Knowledge-Expansion-Roadmap]]).
+- [x] Stripe, Airbnb, Amazon, Zerodha histories — sourced (Gen-2). Next: GitHub, Notion/Canva, Razorpay, Zoho.
 - [ ] Fundraising & dilution note ([[Finance-MOC]]).
 - [ ] Retention/activation note ([[Product-Growth-MOC]]).
 

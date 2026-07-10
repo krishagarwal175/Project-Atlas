@@ -13,14 +13,17 @@ Curated company histories, focused on **strategic decisions and lessons** — no
 - [[Dropbox-referral]] · [[PayPal-referral]] · [[Slack-bottom-up]] · [[Figma-community]]
 - [[HomeJoy-marketplace-failure]] · [[Groupon-discount-growth]]
 
-## Company histories (to write — highest leverage first)
-Prioritized in [[Knowledge-Expansion-Roadmap]]. Shortlist:
-- **Stripe** — developer experience as distribution
-- **Airbnb** — the photography experiment; surviving near-death
-- **Amazon** — Prime, flywheel, long-term orientation
+## Company histories (sourced — Gen-2, in progress)
+- [[Stripe]] — developer experience as distribution
+- [[Airbnb]] — trust/quality as product; surviving near-death (+ [[Airbnb-photography-experiment]])
+- [[Amazon]] — the flywheel; Prime; long-term orientation
+- [[Zerodha]] — bootstrapped, trust, pricing disruption (India)
+
+## Still to write (highest leverage first)
+Prioritized in [[Knowledge-Expansion-Roadmap]]:
 - **GitHub / GitLab** — open-source-led growth
 - **Notion / Canva** — content & freemium
-- **Indian:** Zerodha (bootstrapped, trust), Razorpay (developer GTM), Zoho (long-term, no-VC)
+- **Indian:** Razorpay (developer GTM), Zoho (long-term, no-VC)
 
 ## How to read a history here
 Thesis → inflection timeline → key decisions (→ case studies) → failures → decision patterns → lessons for us.

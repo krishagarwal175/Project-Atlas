@@ -8,6 +8,11 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-10 — 📚 Knowledge Gen-2: sourced company histories
+- **What:** Added four **sourced** company histories — [[Stripe]] (developer-experience-as-distribution), [[Airbnb]] (trust/quality as product; near-death survival), [[Amazon]] (the flywheel; Prime; long-term orientation), [[Zerodha]] (bootstrapped, trust, pricing disruption — India) — plus the [[Airbnb-photography-experiment]] as an atomic case study. Each carries `source-urls` (web-researched, cited); every note focuses on *strategic decisions and lessons for Acredemia*, not encyclopedia recall.
+- **Discipline held:** metrics are cited to sources; nothing invented. Histories cross-link into the Gen-1 mental models/frameworks (flywheel→systems-thinking, DX→JTBD, bootstrapping→margin-of-safety, photography→marketplace cold-start & do-things-that-don't-scale).
+- **Result:** vault 104→109 notes, graph links 575→623; governance clean (1 pre-existing signal), 43 tests green. Startup-History-MOC + Research-Backlog updated; remaining histories (GitHub, Notion/Canva, Razorpay, Zoho) queued.
+
 ## 2026-07-10 — 📚 Knowledge foundation, Generation 1 (Phase 0)
 - **What:** Curated the initial intellectual foundation — the "textbooks," not slides. ~30 deep, cross-linked notes: **12 decision-science mental models** (expected value, base rates/Bayesian, first-principles, second-order, systems, inversion, scenario planning, margin-of-safety, calibration, cognitive biases, decision-quality-vs-outcome), **8 frameworks** (JTBD, RICE/ICE, OKRs/North-Star, Porter's Five Forces, Lean Startup, unit economics, positioning, hypotheses/experiments, source evaluation), **product/growth mechanics** (network effects, growth loops, marketplace cold-start, MVP), and **Acredemia's constitution** (User-Personas, Competitors, Marketplace-Dynamics, Long-Term-Vision).
 - **Ecosystem:** 6 domain MOCs + [[Learning-Paths]] (4 guided sequences) + [[Knowledge-Expansion-Roadmap]] + [[Research-Backlog]]; new templates (mental-model, framework, company, learning-path); taxonomy + config half-lives updated for the new reference types.
