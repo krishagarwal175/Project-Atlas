@@ -37,6 +37,9 @@ HALF_LIFE_DAYS = {
     "competitor": 180,
     "case-study": 730,
     "framework": 1825,
+    "mental-model": None,     # timeless reasoning tools
+    "company": 730,           # revisit company histories every ~2y
+    "learning-path": None,    # curated reading sequences
     "assumption": 180,
     "observation": 365,
     "theory": None,

@@ -9,14 +9,16 @@ updated: 2026-07-09
 Tag sprawl is the #1 way vaults die. `type:` frontmatter is **authoritative**; tags are secondary and **faceted** (always `facet/value`).
 
 ## `type:` (authoritative — one per note)
-**Active (have templates + instances):** `moc · governance · question · decision · experiment · case-study · pattern · theory · contradiction · observation · assumption · lesson · framework · market-signal · adr · dna · project · knowledge-review · template · placeholder`
+**Active (have templates + instances):** `moc · governance · question · decision · experiment · case-study · pattern · theory · contradiction · observation · assumption · lesson · framework · mental-model · company · learning-path · competitor · market-signal · adr · dna · project · knowledge-review · template · placeholder`
 
-**Reserved (defined, no template/instance yet — add a template before first use):** `decision-review · confidence-review · hypothesis · strategic-principle · competitor · market-report · meeting-note · postmortem`
+**Reserved (defined, no template/instance yet — add a template before first use):** `decision-review · confidence-review · hypothesis · strategic-principle · market-report · meeting-note · postmortem`
+
+Reference-library types (`framework · mental-model · company · learning-path · case-study`) are the **curated textbooks** (see [[📚 Knowledge-MOC]] · [[Knowledge-Expansion-Roadmap]]).
 
 > `placeholder` = a `.folder-note.md` marking a reserved empty folder; ignored by the parser and governance.
 
 ## Faceted tags
-- `domain/*` → `gtm · pricing · product · hiring · fundraising · marketing · community · verification · marketplace · partnerships`
+- `domain/*` → `gtm · pricing · product · hiring · fundraising · marketing · community · verification · marketplace · partnerships · decision-science · growth · finance · strategy · software · research-methods · startup-history`
 - `stage/*` → `idea · pre-seed · seed · growth`
 - `scale/*` → `vision · mission · theme · objective · question · decision · experiment · project · task · observation · lesson · knowledge`
 - `status/*` → `open · dormant · answered · reopened · proposed · active · concluded · reversed`

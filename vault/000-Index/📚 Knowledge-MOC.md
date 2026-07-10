@@ -6,7 +6,17 @@ updated: 2026-07-09
 
 # 📚 Knowledge
 
-The compounding asset. Flows upward: **Case Studies → Patterns → Theories**, with **Contradictions** attacking theories to make them stronger.
+The compounding asset. Flows upward: **Case Studies → Patterns → Theories**, with **Contradictions** attacking theories to make them stronger. The **reference library** (curated textbooks) sits alongside, feeding better decisions.
+
+## 🧭 Domain maps (primary navigation)
+- [[Decision-Science-MOC]] — the reasoning toolkit (mental models)
+- [[Frameworks-MOC]] — structured business methods
+- [[Product-Growth-MOC]] — how value is built and spreads
+- [[Finance-MOC]] — the numbers that decide build vs. burn
+- [[Research-Methods-MOC]] — how Atlas knows things
+- [[Startup-History-MOC]] — curated company histories
+- [[Learning-Paths]] 🎓 — guided reading sequences
+- [[Knowledge-Expansion-Roadmap]] · [[Research-Backlog]] — what to add next (curated, not encyclopedic)
 
 ## Theories (explanatory, falsifiable, confidence-tracked)
 ```dataview

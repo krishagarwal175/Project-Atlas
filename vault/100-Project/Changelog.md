@@ -8,6 +8,12 @@ updated: 2026-07-09
 
 Newest first. Every meaningful build/design change gets an entry (template: [[TPL-changelog-entry]]). Architectural changes also get an ADR in `300-Architecture/Tech-Decisions/`.
 
+## 2026-07-10 — 📚 Knowledge foundation, Generation 1 (Phase 0)
+- **What:** Curated the initial intellectual foundation — the "textbooks," not slides. ~30 deep, cross-linked notes: **12 decision-science mental models** (expected value, base rates/Bayesian, first-principles, second-order, systems, inversion, scenario planning, margin-of-safety, calibration, cognitive biases, decision-quality-vs-outcome), **8 frameworks** (JTBD, RICE/ICE, OKRs/North-Star, Porter's Five Forces, Lean Startup, unit economics, positioning, hypotheses/experiments, source evaluation), **product/growth mechanics** (network effects, growth loops, marketplace cold-start, MVP), and **Acredemia's constitution** (User-Personas, Competitors, Marketplace-Dynamics, Long-Term-Vision).
+- **Ecosystem:** 6 domain MOCs + [[Learning-Paths]] (4 guided sequences) + [[Knowledge-Expansion-Roadmap]] + [[Research-Backlog]]; new templates (mental-model, framework, company, learning-path); taxonomy + config half-lives updated for the new reference types.
+- **Curation discipline (deliberate):** prioritized conceptual foundations over new company histories with unverifiable metrics — histories go in Gen-2 with sources. Every note answers "why does this help us think better?"; nothing is filler.
+- **The graph emerged:** the vault grew 63→104 notes and the knowledge graph from 48/152 to **85 nodes / 448 edges** — the reference library densely cross-links into the existing case studies, theories, and questions. Governance clean (1 low finding), 43 tests green.
+
 ## 2026-07-10 — 🧭 Research OS visual identity (UI rebuilt from the design system)
 - **What:** Replaced the generic 2-column dashboard with an actual **Research Operating System shell** — app title bar (red mark, mono `RESEARCH-OS · V1.0`, live `[SYSTEM ACTIVE]`, `⌘K`), a mono **left rail** with bracketed workspace indices (`[00] BRIEF … [04] SIGNALS`), editorial huge display titles per workspace, and **engineered panels** (`.panel` primitive with accent corner-ticks + mono `[ SECTION ]` headers).
 - **Make thinking visible:** the KNOWLEDGE-MAP renders the vault as a live **force-directed relationship graph** (nodes colored/sized by type + degree, hover highlights neighbors, click → inspector with links/backlinks). New `/graph/data` endpoint + `graph.data()`.
