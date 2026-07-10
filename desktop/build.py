@@ -41,6 +41,11 @@ def main():
         "--collect-submodules", "scipy",
         "--collect-submodules", "uvicorn",
         "--collect-data", "sklearn",
+        # native window backend (pywebview → Edge WebView2 via pythonnet); bundle
+        # it fully so the exe opens a real window instead of falling back to a browser
+        "--collect-all", "webview",
+        "--collect-submodules", "clr_loader",
+        "--hidden-import", "clr",
         # engine modules (flat package in app/)
         *sum(( ["--hidden-import", m] for m in [
             "api", "cli", "config", "vault", "search", "governance", "epistemics",

@@ -21,6 +21,16 @@ def _frozen() -> bool:
     return getattr(sys, "frozen", False)
 
 
+def _ensure_std_streams():
+    """In a windowed (--noconsole) build, sys.stdout/stderr are None. Give them real
+    streams so libraries that touch them (uvicorn's isatty check, stray prints) don't crash."""
+    devnull = open(os.devnull, "w")
+    if sys.stdout is None:
+        sys.stdout = devnull
+    if sys.stderr is None:
+        sys.stderr = devnull
+
+
 def app_base() -> Path:
     """Where the user's data lives (writable). Next to the .exe when frozen."""
     if _frozen():
@@ -85,7 +95,11 @@ def _add_app_to_path():
 def start_engine(port: int):
     _add_app_to_path()
     import uvicorn
-    config = uvicorn.Config("api:app", host="127.0.0.1", port=port, log_level="warning")
+    # log_config=None: don't let uvicorn reconfigure logging. Its default formatter
+    # calls sys.stdout.isatty(), which crashes in a windowed (--noconsole) build where
+    # stdout is None. The lifecycle kernel already owns logging (→ logs/).
+    config = uvicorn.Config("api:app", host="127.0.0.1", port=port,
+                            log_level="warning", log_config=None)
     server = uvicorn.Server(config)
     server.install_signal_handlers = lambda: None  # allow running off the main thread
     threading.Thread(target=server.run, daemon=True).start()
@@ -109,6 +123,8 @@ def open_window(url: str):
 
 
 def main():
+    # 0. windowed builds have no console — make stdout/stderr safe first of all
+    _ensure_std_streams()
     # 1. locate/seed the vault, then bring the app modules into scope
     ensure_vault()
     _add_app_to_path()
